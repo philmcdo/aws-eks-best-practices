@@ -709,7 +709,7 @@
 <pre><code class="bash">https://sts.amazonaws.com/?Action=GetCallerIdentity&amp;Version=2011-06-15&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJNGRILKNSRC2W5QA%2F20200219%2Fus-east-1%2Fsts%2Faws4_request&amp;X-Amz-Date=20200219T155427Z&amp;X-Amz-Expires=60&amp;X-Amz-SignedHeaders=host%3Bx-k8s-aws-id&amp;X-Amz-Signature=220f8f3585e320ddb5e683a5c9a405301ad76546f24f28111fdad09cf648a393
 </code></pre>
 
-<p>The token consists of a pre-signed URL that includes an Amazon credential and signature. For additional see https://docs.aws.amazon.com/STS/latest/APIReference/API_GetCallerIdentity.html. </p>
+<p>The token consists of a pre-signed URL that includes an Amazon credential and signature. For additional details see https://docs.aws.amazon.com/STS/latest/APIReference/API_GetCallerIdentity.html. </p>
 <p>The token has a time to live (TTL) of 15 minutes after which a new token will need to be generated. This is handled automatically when you use a client like <code>kubectl</code>, however, if you're using the Kubernetes dashboard, you will need to generate a new token and re-authenticate each time the token expires. </p>
 <p>Once the user's identity has been authenticated by the AWS IAM service, the kube-apiserver reads the <code>aws-auth</code> ConfigMap in the <code>kube-system</code> Namespace to determine the RBAC group to associate with the user.  The <code>aws-auth</code> ConfigMap is used to create a static mapping between IAM principles, i.e. IAM Users and Roles, and Kubernetes RBAC groups. RBAC groups can be referenced in Kubernetes RoleBindings or ClusterRoleBindings. They are similar to IAM Roles in that they define a set of actions (verbs) that can be performed against a collection of Kubernetes resources (objects).</p>
 <h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">&para;</a></h2>
@@ -729,9 +729,9 @@
 <li>Configure public access with a set of whitelisted CIDR blocks and set private endpoint access to enabled. This will allow public access from a specific range of public IPs while forcing all network traffic between the kubelets (workers) and the Kubernetes API through the cross-account ENIs that get provisioned into the cluster VPC when the control plane is provisioned.</li>
 </ul>
 <h3 id="regularly-audit-access-to-the-cluster">Regularly audit access to the cluster<a class="headerlink" href="#regularly-audit-access-to-the-cluster" title="Permanent link">&para;</a></h3>
-<p>Who requires access is likely to change over time. Plan to periodically audit the <code>aws-auth</code> ConfigMap to see who has been granted access and the rights they've been assigned. You can also use open source tooling like <a href="https://github.com/aquasecurity/kubectl-who-can">kubectl-who-can</a>, or <a href="https://github.com/FairwindsOps/rbac-lookup">rbac-lookup</a> to examine the roles bound to a particular service account, user, or group. We'll explore this topic further when we get to the section on <a href="../detective/">auditing</a>.  Additional ideas can be found in this <a href="https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/2019/august/tools-and-methods-for-auditing-kubernetes-rbac-policies/?mkt_tok=eyJpIjoiWWpGa056SXlNV1E0WWpRNSIsInQiOiJBT1hyUTRHYkg1TGxBV0hTZnRibDAyRUZ0VzBxbndnRzNGbTAxZzI0WmFHckJJbWlKdE5WWDdUQlBrYVZpMnNuTFJ1R3hacVYrRCsxYWQ2RTRcL2pMN1BtRVA1ZFZcL0NtaEtIUDdZV3pENzNLcE1zWGVwUndEXC9Pb2tmSERcL1pUaGUifQ%3D%3D">article</a> from nccgroup. </p>
+<p>Who requires access is likely to change over time. Plan to periodically audit the <code>aws-auth</code> ConfigMap to see who has been granted access and the rights they've been assigned. You can also use open source tooling like <a href="https://github.com/aquasecurity/kubectl-who-can">kubectl-who-can</a>, or <a href="https://github.com/FairwindsOps/rbac-lookup">rbac-lookup</a> to examine the roles bound to a particular service account, user, or group. We'll explore this topic further when we get to the section on <a href="../detective/">auditing</a>.  Additional ideas can be found in this <a href="https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/2019/august/tools-and-methods-for-auditing-kubernetes-rbac-policies/?mkt_tok=eyJpIjoiWWpGa056SXlNV1E0WWpRNSIsInQiOiJBT1hyUTRHYkg1TGxBV0hTZnRibDAyRUZ0VzBxbndnRzNGbTAxZzI0WmFHckJJbWlKdE5WWDdUQlBrYVZpMnNuTFJ1R3hacVYrRCsxYWQ2RTRcL2pMN1BtRVA1ZFZcL0NtaEtIUDdZV3pENzNLcE1zWGVwUndEXC9Pb2tmSERcL1pUaGUifQ%3D%3D">article</a> from NCC Group. </p>
 <h3 id="alternative-approaches-to-authentication-and-access-management">Alternative Approaches to Authentication and Access Management<a class="headerlink" href="#alternative-approaches-to-authentication-and-access-management" title="Permanent link">&para;</a></h3>
-<p>While IAM is the preferred way to authenticate users who need access to an EKS cluster, it is possible to use an OIDC identity provider such as GitHub using an authentication proxy and Kubernetes <a href="https://kubernetes.io/docs/reference/access-authn-authz/authentication/#user-impersonation">impersonation</a>. Posts for 2 such solutions have been published on the AWS Open Source blog:</p>
+<p>While IAM is the preferred way to authenticate users who need access to an EKS cluster, it is possible to use an OIDC identity provider such as GitHub using an authentication proxy and Kubernetes <a href="https://kubernetes.io/docs/reference/access-authn-authz/authentication/#user-impersonation">impersonation</a>. Posts for two such solutions have been published on the AWS Open Source blog:</p>
 <ul>
 <li><a href="https://aws.amazon.com/blogs/opensource/authenticating-eks-github-credentials-teleport/">Authenticating to EKS Using GitHub Credentials with Teleport</a></li>
 <li><a href="https://aws.amazon.com/blogs/opensource/consistent-oidc-authentication-across-multiple-eks-clusters-using-kube-oidc-proxy/">Consistent OIDC authentication across multiple EKS clusters using kube-oidc-proxy</a></li>
@@ -807,7 +807,7 @@ rules:
 }
 </code></pre>
 
-<p>This particular token grants the Pod view-only privileges to S3. When the application attempt to read from S3, the token is exchanged for a temporary set of IAM credentials that resembles this: </p>
+<p>This particular token grants the Pod view-only privileges to S3. When the application attempts to read from S3, the token is exchanged for a temporary set of IAM credentials that resembles this: </p>
 <pre><code class="json">{
     &quot;AssumedRoleUser&quot;: {
         &quot;AssumedRoleId&quot;: &quot;AROA36C6WWEJULFUYMPB6:abc&quot;, 
@@ -825,7 +825,7 @@ rules:
 }
 </code></pre>
 
-<p>A mutating webhook that runs as part of the EKS control plane injects the AWS Role Arn and the path to a web identity token file into the Pod as environment variables. These values can also be supplied manually. </p>
+<p>A mutating webhook that runs as part of the EKS control plane injects the AWS Role ARN and the path to a web identity token file into the Pod as environment variables. These values can also be supplied manually. </p>
 <pre><code>AWS_ROLE_ARN=arn:aws:iam::AWS_ACCOUNT_ID:role/IAM_ROLE_NAME
 AWS_WEB_IDENTITY_TOKEN_FILE=/var/run/secrets/eks.amazonaws.com/serviceaccount/token
 </code></pre>
