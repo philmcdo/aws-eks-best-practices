@@ -315,8 +315,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#use-a-os-optimized-for-running-containers" class="md-nav__link">
-    Use a OS optimized for running containers
+  <a href="#use-an-os-optimized-for-running-containers" class="md-nav__link">
+    Use an OS optimized for running containers
   </a>
   
 </li>
@@ -350,8 +350,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#run-amazon-inspector-to-assesses-hosts-for-exposure-vulnerabilities-and-deviations-from-best-practices" class="md-nav__link">
-    Run Amazon Inspector to assesses hosts for exposure, vulnerabilities, and deviations from best practices
+  <a href="#run-amazon-inspector-to-assess-hosts-for-exposure-vulnerabilities-and-deviations-from-best-practices" class="md-nav__link">
+    Run Amazon Inspector to assess hosts for exposure, vulnerabilities, and deviations from best practices
   </a>
   
 </li>
@@ -466,8 +466,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#use-a-os-optimized-for-running-containers" class="md-nav__link">
-    Use a OS optimized for running containers
+  <a href="#use-an-os-optimized-for-running-containers" class="md-nav__link">
+    Use an OS optimized for running containers
   </a>
   
 </li>
@@ -501,8 +501,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#run-amazon-inspector-to-assesses-hosts-for-exposure-vulnerabilities-and-deviations-from-best-practices" class="md-nav__link">
-    Run Amazon Inspector to assesses hosts for exposure, vulnerabilities, and deviations from best practices
+  <a href="#run-amazon-inspector-to-assess-hosts-for-exposure-vulnerabilities-and-deviations-from-best-practices" class="md-nav__link">
+    Run Amazon Inspector to assess hosts for exposure, vulnerabilities, and deviations from best practices
   </a>
   
 </li>
@@ -575,16 +575,16 @@
                 <h1 id="protecting-the-infrastructure-hosts">Protecting the infrastructure (hosts)<a class="headerlink" href="#protecting-the-infrastructure-hosts" title="Permanent link">&para;</a></h1>
 <p>Inasmuch as it's important to secure your container images, it's equally important to safeguard the infrastructure that runs them. This section explores different ways to mitigate risks from attacks launched directly against the host.  These guidelines should be used in conjunction with those outlined in the <a href="../runtime/">Runtime Security</a> section. </p>
 <h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">&para;</a></h2>
-<h3 id="use-a-os-optimized-for-running-containers">Use a OS optimized for running containers<a class="headerlink" href="#use-a-os-optimized-for-running-containers" title="Permanent link">&para;</a></h3>
+<h3 id="use-an-os-optimized-for-running-containers">Use an OS optimized for running containers<a class="headerlink" href="#use-an-os-optimized-for-running-containers" title="Permanent link">&para;</a></h3>
 <p>Conside using Flatcar Linux, Project Atomic, RancherOS, and <a href="https://github.com/bottlerocket-os/bottlerocket/">Bottlerocket</a> (currently in preview), a special purpose OS from AWS designed for running Linux containers.  It includes a reduced attack surface, a disk image that is verified on boot, and enforced permission boundaries using SELinux. </p>
 <h3 id="treat-your-infrastructure-as-immutable-and-automate-the-replacement-of-your-worker-nodes">Treat your infrastructure as immutable and automate the replacement of your worker nodes<a class="headerlink" href="#treat-your-infrastructure-as-immutable-and-automate-the-replacement-of-your-worker-nodes" title="Permanent link">&para;</a></h3>
-<p>Rather than performing in-place upgrades, replace your workers when a new patch or update becomes available. This can be approached a couple of ways. You can either add instances to an existing autoscaling group using the latest AMI as you sequentially cordon and drain nodes until all of the nodes in the group have been replaced with the latest AMI.  Alternatively, you can add instances to a new node group while you sequentally cordon and drain nodes from the old node group until all of the nodes have been replaced.  EKS <a href="https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html">managed node groups</a> utilizes the second approach and will present an option to upgrade workers when a new AMI becomes available. <code>eksctl</code> also has a mechanism for creating node groups with the latest AMI and for gracefully cordoning and draining pods from nodes groups before the instances are terminated. If you decide to use a different method for replacing your worker nodes, it is strongly recommended that you automate the process to minimize human oversight as you will likely need to replace workers regularly as new updates/patches are released and when the control plane is upgraded. </p>
+<p>Rather than performing in-place upgrades, replace your workers when a new patch or update becomes available. This can be approached a couple of ways. You can either add instances to an existing autoscaling group using the latest AMI as you sequentially cordon and drain nodes until all of the nodes in the group have been replaced with the latest AMI.  Alternatively, you can add instances to a new node group while you sequentially cordon and drain nodes from the old node group until all of the nodes have been replaced.  EKS <a href="https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html">managed node groups</a> uses the second approach and will present an option to upgrade workers when a new AMI becomes available. <code>eksctl</code> also has a mechanism for creating node groups with the latest AMI and for gracefully cordoning and draining pods from nodes groups before the instances are terminated. If you decide to use a different method for replacing your worker nodes, it is strongly recommended that you automate the process to minimize human oversight as you will likely need to replace workers regularly as new updates/patches are released and when the control plane is upgraded. </p>
 <p>With EKS Fargate, AWS will automatically update the underlying infrastructure as updates become available.  Oftentimes this can be done seamlessly, but there may be times when an update will cause your task to be rescheduled.  Hence, we recommend that you create deployments with multiple replicas when running your application as a Fargate pod. </p>
 <h3 id="periodically-run-kube-bench-to-verify-compliance-with-cis-benchmarks-for-kubernetes">Periodically run kube-bench to verify compliance with <a href="https://www.cisecurity.org/benchmark/kubernetes/">CIS benchmarks for Kubernetes</a><a class="headerlink" href="#periodically-run-kube-bench-to-verify-compliance-with-cis-benchmarks-for-kubernetes" title="Permanent link">&para;</a></h3>
 <p>When running <a href="https://github.com/aquasecurity/kube-bench">kube-bench</a> against an EKS cluster, follow these instructions from Aqua Security, https://github.com/aquasecurity/kube-bench#running-in-an-eks-cluster. </p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
-<p>false positives may appear in the report because of the way the EKS optimized AMI configures the kubelet.  The issue is currently being tracked on <a href="https://github.com/aquasecurity/kube-bench/issues/571">GitHub</a>. </p>
+<p>False positives may appear in the report because of the way the EKS optimized AMI configures the kubelet.  The issue is currently being tracked on <a href="https://github.com/aquasecurity/kube-bench/issues/571">GitHub</a>. </p>
 </div>
 <h3 id="minimize-access-to-worker-nodes">Minimize access to worker nodes<a class="headerlink" href="#minimize-access-to-worker-nodes" title="Permanent link">&para;</a></h3>
 <p>Instead of enabling SSH access, use <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html">SSM Session Manager</a> when you need to remote into a host.  Unlike SSH keys which can be lost, copied, or shared, Session Manager allows you to control access to EC2 instances using IAM.  Moreover, it provides an audit trail and log of the commands that were run on the instance.</p>
@@ -595,8 +595,8 @@
 </div>
 <h3 id="deploy-workers-onto-private-subnets">Deploy workers onto private subnets<a class="headerlink" href="#deploy-workers-onto-private-subnets" title="Permanent link">&para;</a></h3>
 <p>By deploying workers onto private subnets, you minimize their exposure to the Internet where attacks often originate.  Beginning April 22, 2020, the assignment of public IP addresses to nodes in a managed node groups will be controlled by the subnet they are deployed onto.  Prior to this, nodes in a Managed Node Group were automatically assigned a public IP. If you choose to deploy your worker nodes on to public subnets, implement restrictive AWS security group rules to limit their exposure. </p>
-<h3 id="run-amazon-inspector-to-assesses-hosts-for-exposure-vulnerabilities-and-deviations-from-best-practices">Run Amazon Inspector to assesses hosts for exposure, vulnerabilities, and deviations from best practices<a class="headerlink" href="#run-amazon-inspector-to-assesses-hosts-for-exposure-vulnerabilities-and-deviations-from-best-practices" title="Permanent link">&para;</a></h3>
-<p><a href="https://docs.aws.amazon.com/inspector/latest/userguide/inspector_introduction.html">Inspector</a> requires the deployment of an agent that continually monitors activity on the instance while using set of rules to assess alignment with best practices. </p>
+<h3 id="run-amazon-inspector-to-assess-hosts-for-exposure-vulnerabilities-and-deviations-from-best-practices">Run Amazon Inspector to assess hosts for exposure, vulnerabilities, and deviations from best practices<a class="headerlink" href="#run-amazon-inspector-to-assess-hosts-for-exposure-vulnerabilities-and-deviations-from-best-practices" title="Permanent link">&para;</a></h3>
+<p><a href="https://docs.aws.amazon.com/inspector/latest/userguide/inspector_introduction.html">Inspector</a> requires the deployment of an agent that continually monitors activity on the instance while using a set of rules to assess alignment with best practices. </p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>At present, managed node groups do not allow you to supply user metadata or your own AMI.  If you want to run Inspector on managed workers, you will need to install the agent after the node has been bootstrapped.</p>

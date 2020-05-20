@@ -374,8 +374,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#label-offending-the-podnode-with-a-label-indicating-that-it-is-part-of-an-active-investigation" class="md-nav__link">
-    Label offending the Pod/Node with a label indicating that it is part of an active investigation
+  <a href="#label-the-offending-podnode-with-a-label-indicating-that-it-is-part-of-an-active-investigation" class="md-nav__link">
+    Label the offending Pod/Node with a label indicating that it is part of an active investigation
   </a>
   
 </li>
@@ -509,8 +509,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#label-offending-the-podnode-with-a-label-indicating-that-it-is-part-of-an-active-investigation" class="md-nav__link">
-    Label offending the Pod/Node with a label indicating that it is part of an active investigation
+  <a href="#label-the-offending-podnode-with-a-label-indicating-that-it-is-part-of-an-active-investigation" class="md-nav__link">
+    Label the offending Pod/Node with a label indicating that it is part of an active investigation
   </a>
   
 </li>
@@ -621,12 +621,12 @@ spec:
 <p>This guidance is not applicable to Fargate where each Fargate pod run in its own sandboxed environment.  Instead of cordoning, sequester the affected Fargate pods by applying a network policy that denies all ingress and egress traffic. </p>
 </div>
 <h3 id="enable-termination-protection-on-impacted-worker-node">Enable termination protection on impacted worker node<a class="headerlink" href="#enable-termination-protection-on-impacted-worker-node" title="Permanent link">&para;</a></h3>
-<p>An attacker may attempt to erase their misdeeds by terminating affected node.  Enabling <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html#Using_ChangingDisableAPITermination">termination protection</a> can prevent this from happening.  <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-termination.html#instance-protection">Instance scale-in protection</a> will protect the node from a scale-in event. </p>
+<p>An attacker may attempt to erase their misdeeds by terminating an affected node.  Enabling <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html#Using_ChangingDisableAPITermination">termination protection</a> can prevent this from happening.  <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-termination.html#instance-protection">Instance scale-in protection</a> will protect the node from a scale-in event. </p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>You cannot enable termination protection on a Spot instance. </p>
 </div>
-<h3 id="label-offending-the-podnode-with-a-label-indicating-that-it-is-part-of-an-active-investigation">Label offending the Pod/Node with a label indicating that it is part of an active investigation<a class="headerlink" href="#label-offending-the-podnode-with-a-label-indicating-that-it-is-part-of-an-active-investigation" title="Permanent link">&para;</a></h3>
+<h3 id="label-the-offending-podnode-with-a-label-indicating-that-it-is-part-of-an-active-investigation">Label the offending Pod/Node with a label indicating that it is part of an active investigation<a class="headerlink" href="#label-the-offending-podnode-with-a-label-indicating-that-it-is-part-of-an-active-investigation" title="Permanent link">&para;</a></h3>
 <p>This will serve as a warning to cluster administrators not to tamper with the affected Pods/Nodes until the investigation is complete. </p>
 <h3 id="capture-volatile-artifacts-on-the-worker-node">Capture volatile artifacts on the worker node<a class="headerlink" href="#capture-volatile-artifacts-on-the-worker-node" title="Permanent link">&para;</a></h3>
 <ul>

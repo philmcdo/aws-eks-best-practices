@@ -536,36 +536,36 @@
 <h3 id="create-alarms-for-suspicous-events">Create alarms for suspicous events<a class="headerlink" href="#create-alarms-for-suspicous-events" title="Permanent link">&para;</a></h3>
 <p>Create an alarm to automatically alert you where there is an increase in 403 Forbidden and 401 Unauthorized responses, and then use attributes like <code>host</code>, <code>sourceIPs</code>, and <code>k8s_user.username</code> to find out where those requests are coming from.</p>
 <h3 id="analyze-logs-with-log-insights">Analyze logs with Log Insights<a class="headerlink" href="#analyze-logs-with-log-insights" title="Permanent link">&para;</a></h3>
-<p>Use CloudWatch Log Insights to monitor changes to RBAC objects, e.g. roles, rolebindings, clusterroles, and clusterrolebindings.  A few sample queries appear below: </p>
-<p>Lists create, update, delete operations to roles:</p>
+<p>Use CloudWatch Log Insights to monitor changes to RBAC objects, e.g. Roles, RoleBindings, ClusterRoles, and ClusterRoleBindings.  A few sample queries appear below: </p>
+<p>Lists create, update, delete operations to Roles:</p>
 <pre><code>fields @timestamp, @message
 | sort @timestamp desc
 | limit 100
 | filter objectRef.resource=&quot;roles&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
 </code></pre>
 
-<p>Lists create, update, delete operations to rolebindings:</p>
+<p>Lists create, update, delete operations to RoleBindings:</p>
 <pre><code>fields @timestamp, @message
 | sort @timestamp desc
 | limit 100
 | filter objectRef.resource=&quot;rolebindings&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
 </code></pre>
 
-<p>Lists create, update, delete operations to clusterroles:</p>
+<p>Lists create, update, delete operations to ClusterRoles:</p>
 <pre><code>fields @timestamp, @message
 | sort @timestamp desc
 | limit 100
 | filter objectRef.resource=&quot;clusterroles&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
 </code></pre>
 
-<p>Lists create, update, delete operations to clusterrolebindings:</p>
+<p>Lists create, update, delete operations to ClusterRoleBindings:</p>
 <pre><code>fields @timestamp, @message
 | sort @timestamp desc
 | limit 100
 | filter objectRef.resource=&quot;clusterrolebindings&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
 </code></pre>
 
-<p>Plots unauthorized read operations against secrets:</p>
+<p>Plots unauthorized read operations against Secrets:</p>
 <pre><code>fields @timestamp, @message
 | sort @timestamp desc
 | limit 100
