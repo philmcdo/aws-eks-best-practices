@@ -588,6 +588,11 @@
 </div>
 <h3 id="minimize-access-to-worker-nodes">Minimize access to worker nodes<a class="headerlink" href="#minimize-access-to-worker-nodes" title="Permanent link">&para;</a></h3>
 <p>Instead of enabling SSH access, use <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html">SSM Session Manager</a> when you need to remote into a host.  Unlike SSH keys which can be lost, copied, or shared, Session Manager allows you to control access to EC2 instances using IAM.  Moreover, it provides an audit trail and log of the commands that were run on the instance.</p>
+<p>At present, you cannot use custom AMIs with Managed Node Groups or modify the EC2 launch template for managed workers.  This presents a "chicken and egg problem", i.e. how can you use the SSM agent to remotely access these instances without using SSH to install the SSM agent first? As a temporary stop-gap you can run a privileged <a href="https://github.com/jicowan/ssm-agent-daemonset">DaemonSet</a> to run a shell script that installs the SSM agent.  </p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Since the DaemonSet is runs as a privileged pod, you should consider deleting it once the SSM agent is installed on your worker nodes. This workaround will no longer be necessary once Managed Node Groups adds support for custom AMIs and EC2 launch templates. </p>
+</div>
 <h3 id="deploy-workers-onto-private-subnets">Deploy workers onto private subnets<a class="headerlink" href="#deploy-workers-onto-private-subnets" title="Permanent link">&para;</a></h3>
 <p>By deploying workers onto private subnets, you minimize their exposure to the Internet where attacks often originate.  At present, worker nodes that are part of a managed node group are automatically assigned a public IP. If you plan to use managed node groups use AWS security groups to restrict or deny inbound access from the Internet (0.0.0.0/0). Risk to workers that are deployed onto public subnets can also be mitigated by implementing restrictive security group rules. </p>
 <div class="admonition info">
