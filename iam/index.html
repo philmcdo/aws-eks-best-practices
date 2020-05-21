@@ -708,7 +708,7 @@
 
 
 <p>Each token starts with <code>k8s-aws-v1.</code> followed by a base64 encoded string. The string, when decoded, should resemble this: </p>
-<div class="codehilite"><pre><span></span><code>https://sts.amazonaws.com/?Action<span class="o">=</span>GetCallerIdentity<span class="p">&amp;</span><span class="nv">Version</span><span class="o">=</span><span class="m">2011</span>-06-15<span class="p">&amp;</span>X-Amz-Algorithm<span class="o">=</span>AWS4-HMAC-SHA256<span class="p">&amp;</span>X-Amz-Credential<span class="o">=</span>AKIAJNGRILKNSRC2W5QA%2F20200219%2Fus-east-1%2Fsts%2Faws4_request<span class="p">&amp;</span>X-Amz-Date<span class="o">=</span>20200219T155427Z<span class="p">&amp;</span>X-Amz-Expires<span class="o">=</span><span class="m">60</span><span class="p">&amp;</span>X-Amz-SignedHeaders<span class="o">=</span>host%3Bx-k8s-aws-id<span class="p">&amp;</span>X-Amz-Signature<span class="o">=</span>220f8f3585e320ddb5e683a5c9a405301ad76546f24f28111fdad09cf648a393
+<div class="codehilite"><pre><span></span><code>https://sts.amazonaws.com/?Action<span class="o">=</span>GetCallerIdentity<span class="p">&amp;</span><span class="nv">Version</span><span class="o">=</span><span class="m">2011</span>-06-15<span class="p">&amp;</span>X-Amz-Algorithm<span class="o">=</span>AWS4-HMAC-SHA256<span class="p">&amp;</span>X-Amz-Credential<span class="o">=</span>AKIAJPFRILKNSRC2W5QA%2F20200219%2Fus-east-1%2Fsts%2Faws4_request<span class="p">&amp;</span>X-Amz-Date<span class="o">=</span>20200219T155427Z<span class="p">&amp;</span>X-Amz-Expires<span class="o">=</span><span class="m">60</span><span class="p">&amp;</span>X-Amz-SignedHeaders<span class="o">=</span>host%3Bx-k8s-aws-id<span class="p">&amp;</span>X-Amz-Signature<span class="o">=</span>220f8f3285e320ddb5e683a5c9a405301ad76546f24f28111fdad09cf648a393
 </code></pre></div>
 
 
@@ -795,7 +795,7 @@
   <span class="p">],</span>
   <span class="nt">&quot;exp&quot;</span><span class="p">:</span> <span class="mi">1582306514</span><span class="p">,</span>
   <span class="nt">&quot;iat&quot;</span><span class="p">:</span> <span class="mi">1582220114</span><span class="p">,</span>
-  <span class="nt">&quot;iss&quot;</span><span class="p">:</span> <span class="s2">&quot;https://oidc.eks.us-west-2.amazonaws.com/id/D43CF17C27A865987144EA99A26FB128&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;iss&quot;</span><span class="p">:</span> <span class="s2">&quot;https://oidc.eks.us-west-2.amazonaws.com/id/D43CF17C27A865933144EA99A26FB128&quot;</span><span class="p">,</span>
   <span class="nt">&quot;kubernetes.io&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="nt">&quot;namespace&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
     <span class="nt">&quot;pod&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -817,10 +817,10 @@
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
     <span class="nt">&quot;AssumedRoleUser&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">&quot;AssumedRoleId&quot;</span><span class="p">:</span> <span class="s2">&quot;AROA36C6WWEJULFUYMPB6:abc&quot;</span><span class="p">,</span> 
-        <span class="nt">&quot;Arn&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:sts::820537372947:assumed-role/eksctl-winterfell-addon-iamserviceaccount-de-Role1-1D61LT75JH3MB/abc&quot;</span>
+        <span class="nt">&quot;Arn&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:sts::123456789012:assumed-role/eksctl-winterfell-addon-iamserviceaccount-de-Role1-1D61LT75JH3MB/abc&quot;</span>
     <span class="p">},</span> 
     <span class="nt">&quot;Audience&quot;</span><span class="p">:</span> <span class="s2">&quot;sts.amazonaws.com&quot;</span><span class="p">,</span> 
-    <span class="nt">&quot;Provider&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:iam::820537372947:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/D43CF17C27A865987144EA99A26FB128&quot;</span><span class="p">,</span> 
+    <span class="nt">&quot;Provider&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/D43CF17C27A865933144EA99A26FB128&quot;</span><span class="p">,</span> 
     <span class="nt">&quot;SubjectFromWebIdentityToken&quot;</span><span class="p">:</span> <span class="s2">&quot;system:serviceaccount:default:s3-read-only&quot;</span><span class="p">,</span> 
     <span class="nt">&quot;Credentials&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">&quot;SecretAccessKey&quot;</span><span class="p">:</span> <span class="s2">&quot;ORJ+8Adk+wW+nU8FETq7+mOqeA8Z6jlPihnV8hX1&quot;</span><span class="p">,</span> 
