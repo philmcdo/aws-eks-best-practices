@@ -508,16 +508,17 @@
                 
                 <h1 id="auditing-and-logging">Auditing and logging<a class="headerlink" href="#auditing-and-logging" title="Permanent link">&para;</a></h1>
 <p>Collecting and analyzing [audit] logs is useful for a variety of different reasons.  Logs can help with root cause analysis and attribution, i.e. ascribing a change to a particular user. When enough logs have been collected, they can be used to detect anomalous behaviors too. On EKS, the audit logs are sent to Amazon Cloudwatch Logs. The audit policy for EKS currently augments the reference <a href="https://github.com/kubernetes/kubernetes/blob/master/cluster/gce/gci/configure-helper.sh#L983-L1108">policy</a> in the helper script with the following policy: </p>
-<pre><code class="yaml">- level: RequestResponse
-    namespaces: [&quot;kube-system&quot;]
-    verbs: [&quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
-    resources:
-      - group: &quot;&quot; # core
-        resources: [&quot;configmaps&quot;]
-        resourceNames: [&quot;aws-auth&quot;]
-    omitStages:
-      - &quot;RequestReceived&quot;
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="p p-Indicator">-</span> <span class="nt">level</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">RequestResponse</span>
+    <span class="l l-Scalar l-Scalar-Plain">namespaces</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;kube-system&quot;</span><span class="p p-Indicator">]</span>
+    <span class="nt">verbs</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;update&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;patch&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;delete&quot;</span><span class="p p-Indicator">]</span>
+    <span class="nt">resources</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">group</span><span class="p">:</span> <span class="s">&quot;&quot;</span> <span class="c1"># core</span>
+        <span class="nt">resources</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;configmaps&quot;</span><span class="p p-Indicator">]</span>
+        <span class="nt">resourceNames</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;aws-auth&quot;</span><span class="p p-Indicator">]</span>
+    <span class="nt">omitStages</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;RequestReceived&quot;</span>
+</code></pre></div>
+
 
 <p>This logs changes to the <code>aws-auth</code> ConfigMap which is used to grant access to an EKS cluster. </p>
 <h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">&para;</a></h2>
@@ -538,47 +539,53 @@
 <h3 id="analyze-logs-with-log-insights">Analyze logs with Log Insights<a class="headerlink" href="#analyze-logs-with-log-insights" title="Permanent link">&para;</a></h3>
 <p>Use CloudWatch Log Insights to monitor changes to RBAC objects, e.g. Roles, RoleBindings, ClusterRoles, and ClusterRoleBindings.  A few sample queries appear below: </p>
 <p>Lists create, update, delete operations to Roles:</p>
-<pre><code>fields @timestamp, @message
-| sort @timestamp desc
-| limit 100
-| filter objectRef.resource=&quot;roles&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="err">fields @timestamp, @message</span>
+<span class="err">| sort @timestamp desc</span>
+<span class="err">| limit 100</span>
+<span class="err">| filter objectRef.resource=&quot;roles&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]</span>
+</code></pre></div>
+
 
 <p>Lists create, update, delete operations to RoleBindings:</p>
-<pre><code>fields @timestamp, @message
-| sort @timestamp desc
-| limit 100
-| filter objectRef.resource=&quot;rolebindings&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="err">fields @timestamp, @message</span>
+<span class="err">| sort @timestamp desc</span>
+<span class="err">| limit 100</span>
+<span class="err">| filter objectRef.resource=&quot;rolebindings&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]</span>
+</code></pre></div>
+
 
 <p>Lists create, update, delete operations to ClusterRoles:</p>
-<pre><code>fields @timestamp, @message
-| sort @timestamp desc
-| limit 100
-| filter objectRef.resource=&quot;clusterroles&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="err">fields @timestamp, @message</span>
+<span class="err">| sort @timestamp desc</span>
+<span class="err">| limit 100</span>
+<span class="err">| filter objectRef.resource=&quot;clusterroles&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]</span>
+</code></pre></div>
+
 
 <p>Lists create, update, delete operations to ClusterRoleBindings:</p>
-<pre><code>fields @timestamp, @message
-| sort @timestamp desc
-| limit 100
-| filter objectRef.resource=&quot;clusterrolebindings&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="err">fields @timestamp, @message</span>
+<span class="err">| sort @timestamp desc</span>
+<span class="err">| limit 100</span>
+<span class="err">| filter objectRef.resource=&quot;clusterrolebindings&quot; and verb in [&quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]</span>
+</code></pre></div>
+
 
 <p>Plots unauthorized read operations against Secrets:</p>
-<pre><code>fields @timestamp, @message
-| sort @timestamp desc
-| limit 100
-| filter objectRef.resource=&quot;secrets&quot; and verb in [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;] and responseStatus.code=&quot;401&quot;
-| count() by bin(1m)
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="err">fields @timestamp, @message</span>
+<span class="err">| sort @timestamp desc</span>
+<span class="err">| limit 100</span>
+<span class="err">| filter objectRef.resource=&quot;secrets&quot; and verb in [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;] and responseStatus.code=&quot;401&quot;</span>
+<span class="err">| count() by bin(1m)</span>
+</code></pre></div>
+
 
 <p>List of failed anonymous requests:</p>
-<pre><code>fields @timestamp, @message, sourceIPs.0
-| sort @timestamp desc
-| limit 100
-| filter user.username=&quot;system:anonymous&quot; and responseStatus.code in [&quot;401&quot;, &quot;403&quot;]
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="err">fields @timestamp, @message, sourceIPs.0</span>
+<span class="err">| sort @timestamp desc</span>
+<span class="err">| limit 100</span>
+<span class="err">| filter user.username=&quot;system:anonymous&quot; and responseStatus.code in [&quot;401&quot;, &quot;403&quot;]</span>
+</code></pre></div>
+
 
 <h3 id="audit-your-cloudtrail-logs">Audit your CloudTrail logs<a class="headerlink" href="#audit-your-cloudtrail-logs" title="Permanent link">&para;</a></h3>
 <p>AWS APIs called by pods that are utilizing IAM Roles for Service Accounts (IRSA) are automatically logged to CloudTrail along with the name of the service account. If the name of a service account that wasn't explicitly authorized to call an API appears in the log, it may be an indication that the IAM role's trust policy was misconfigured. Generally speaking, Cloudtrail is a great way to ascribe AWS API calls to specific IAM principals. </p>

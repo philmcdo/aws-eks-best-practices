@@ -452,37 +452,39 @@
                 
                 <h1 id="encryption-at-rest">Encryption at rest<a class="headerlink" href="#encryption-at-rest" title="Permanent link">&para;</a></h1>
 <p>There are three different AWS-native storage options you can use with Kubernetes: <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEBS.html">EBS</a>, <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEFS.html">EFS</a>, and <a href="https://docs.aws.amazon.com/fsx/latest/LustreGuide/what-is.html">FSx for Lustre</a>.  All three offer encryption at rest using a service managed key or a customer master key (CMK). For EBS you can use the in-tree storage driver or the <a href="https://github.com/kubernetes-sigs/aws-ebs-csi-driver">EBS CSI driver</a>.  Both include parameters for encrypting volumes and supplying a CMK.  For EFS, you can use the <a href="https://github.com/kubernetes-sigs/aws-efs-csi-driver">EFS CSI driver</a>, however, unlike EBS, the EFS CSI driver does not support dynamic provisioning.  If you want to use EFS with EKS, you will need to provision and configure at-rest encryption for the file system prior to creating a PV. For further information about EFS file encryption, please refer to <a href="https://docs.aws.amazon.com/efs/latest/ug/encryption-at-rest.html">Encrypting Data at Rest</a>. Besides offering at-rest encryption, EFS and FSx for Lustre include an option for encrypting data in transit.  FSx for Luster does this by default.  For EFS, you can add transport encryption by adding the <code>tls</code> parameter to <code>mountOptions</code> in your PV as in this example: </p>
-<pre><code class="yaml">apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: efs-pv
-spec:
-  capacity:
-    storage: 5Gi
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: efs-sc
-  mountOptions:
-    - tls
-  csi:
-    driver: efs.csi.aws.com
-    volumeHandle: &lt;file_system_id&gt;
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PersistentVolume</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">efs-pv</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">capacity</span><span class="p">:</span>
+    <span class="nt">storage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5Gi</span>
+  <span class="nt">volumeMode</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Filesystem</span>
+  <span class="nt">accessModes</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ReadWriteOnce</span>
+  <span class="nt">persistentVolumeReclaimPolicy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Retain</span>
+  <span class="nt">storageClassName</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">efs-sc</span>
+  <span class="nt">mountOptions</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">tls</span>
+  <span class="nt">csi</span><span class="p">:</span>
+    <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">efs.csi.aws.com</span>
+    <span class="nt">volumeHandle</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;file_system_id&gt;</span>
+</code></pre></div>
+
 
 <p>The <a href="https://github.com/kubernetes-sigs/aws-fsx-csi-driver">FSx CSI driver</a> supports dynamic provisioning of Lustre file systems.  It encrypts data with a service managed key by default, although there is an option to provide you own CMK as in this example:</p>
-<pre><code class="yaml">kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: fsx-sc
-provisioner: fsx.csi.aws.com
-parameters:
-  subnetId: subnet-056da83524edbe641
-  securityGroupIds: sg-086f61ea73388fb6b
-  deploymentType: PERSISTENT_1
-  kmsKeyId: &lt;kms_arn&gt;
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">StorageClass</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">storage.k8s.io/v1</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fsx-sc</span>
+<span class="nt">provisioner</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fsx.csi.aws.com</span>
+<span class="nt">parameters</span><span class="p">:</span>
+  <span class="nt">subnetId</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">subnet-056da83524edbe641</span>
+  <span class="nt">securityGroupIds</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sg-086f61ea73388fb6b</span>
+  <span class="nt">deploymentType</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PERSISTENT_1</span>
+  <span class="nt">kmsKeyId</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;kms_arn&gt;</span>
+</code></pre></div>
+
 
 <h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">&para;</a></h2>
 <h3 id="encrypt-data-at-rest">Encrypt data at rest<a class="headerlink" href="#encrypt-data-at-rest" title="Permanent link">&para;</a></h3>
@@ -507,20 +509,22 @@ parameters:
 For additional details, see <a href="https://aws.amazon.com/blogs/containers/using-eks-encryption-provider-support-for-defense-in-depth/">using EKS encryption provider support for defense in depth</a></p>
 <h3 id="audit-the-use-of-secrets">Audit the use of secrets<a class="headerlink" href="#audit-the-use-of-secrets" title="Permanent link">&para;</a></h3>
 <p>On EKS, turn on audit logging and create a CloudWatch metrics filter and alarm to alert you when a secret is used (optional). The following is an example of a metrics filter for the Kubernetes audit log, <code>{($.verb="get") &amp;&amp; ($.objectRef.resource="secret")}</code>.  You can also use the following queries with CloudWatch Log Insights: </p>
-<pre><code>fields @timestamp, @message
-| sort @timestamp desc
-| limit 100
-| stats count(*) by objectRef.name as secret
-| filter verb=&quot;get&quot; and objectRef.resource=&quot;secrets&quot;
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="err">fields @timestamp, @message</span>
+<span class="err">| sort @timestamp desc</span>
+<span class="err">| limit 100</span>
+<span class="err">| stats count(*) by objectRef.name as secret</span>
+<span class="err">| filter verb=&quot;get&quot; and objectRef.resource=&quot;secrets&quot;</span>
+</code></pre></div>
+
 
 <p>The above query will display the number of times a secret has been accessed within a specific timeframe. </p>
-<pre><code>fields @timestamp, @message
-| sort @timestamp desc
-| limit 100
-| filter verb=&quot;get&quot; and objectRef.resource=&quot;secrets&quot;
-| display objectRef.namespace, objectRef.name, user.username, responseStatus.code
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="err">fields @timestamp, @message</span>
+<span class="err">| sort @timestamp desc</span>
+<span class="err">| limit 100</span>
+<span class="err">| filter verb=&quot;get&quot; and objectRef.resource=&quot;secrets&quot;</span>
+<span class="err">| display objectRef.namespace, objectRef.name, user.username, responseStatus.code</span>
+</code></pre></div>
+
 
 <p>This query will display the secret, along with the namespace and username of the user who attempted to access the secret and the response code. </p>
 <h3 id="rotate-your-secrets-periodically">Rotate your secrets periodically<a class="headerlink" href="#rotate-your-secrets-periodically" title="Permanent link">&para;</a></h3>

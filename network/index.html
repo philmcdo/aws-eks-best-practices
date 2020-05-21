@@ -669,17 +669,18 @@
 <h3 id="create-a-default-deny-policy">Create a default deny policy<a class="headerlink" href="#create-a-default-deny-policy" title="Permanent link">&para;</a></h3>
 <p>As with RBAC policies, network policies should adhere to the policy of least privileged access.  Start by creating a deny all policy that restricts all inbound and outbound traffic from a namespace or create a global policy using Calico.</p>
 <p><em>Kubernetes network policy</em></p>
-<pre><code class="yaml">apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: default-deny
-  namespace: default
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-  - Egress
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">NetworkPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default-deny</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">podSelector</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+  <span class="nt">policyTypes</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Ingress</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Egress</span>
+</code></pre></div>
+
 
 <p><img alt="" src="../images/default-deny.jpg" /></p>
 <div class="admonition tip">
@@ -687,113 +688,118 @@ spec:
 <p>The image above was created by the network policy viewer from <a href="https://orca.tufin.io/netpol/">Tufin</a>.</p>
 </div>
 <p><em>Calico global network policy</em></p>
-<pre><code class="yaml">apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: default-deny
-spec:
-  selector: all()
-  types:
-  - Ingress
-  - Egress
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">crd.projectcalico.org/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GlobalNetworkPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default-deny</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">selector</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">all()</span>
+  <span class="nt">types</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Ingress</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Egress</span>
+</code></pre></div>
+
 
 <h3 id="create-a-rule-to-allow-dns-queries">Create a rule to allow DNS queries<a class="headerlink" href="#create-a-rule-to-allow-dns-queries" title="Permanent link">&para;</a></h3>
 <p>Once you have the default deny all rule in place, you can begin layering on additional rules, such as a global rule that allows pods to query CoreDNS for name resolution. You begin by labeling the namespace: </p>
-<pre><code>kubectl label namespace kube-system name=kube-system
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="err">kubectl label namespace kube-system name=kube-system</span>
+</code></pre></div>
+
 
 <p>Then add the network policy:</p>
-<pre><code class="yaml">apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-dns-access
-  namespace: default
-spec:
-  podSelector:
-    matchLabels: {}
-  policyTypes:
-  - Egress
-  egress:
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: kube-system
-    ports:
-    - protocol: UDP
-      port: 53
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">NetworkPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">allow-dns-access</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">podSelector</span><span class="p">:</span>
+    <span class="nt">matchLabels</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+  <span class="nt">policyTypes</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Egress</span>
+  <span class="nt">egress</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">to</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">namespaceSelector</span><span class="p">:</span>
+        <span class="nt">matchLabels</span><span class="p">:</span>
+          <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kube-system</span>
+    <span class="nt">ports</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">UDP</span>
+      <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">53</span>
+</code></pre></div>
+
 
 <p><img alt="" src="../images/allow-dns-access.jpg" /></p>
 <p><em>Calico global policy equivalent</em></p>
-<pre><code class="yaml">apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: allow-dns-egress
-spec:
-  selector: all()
-  types:
-  - Egress
-  egress:
-  - action: Allow
-    protocol: UDP  
-    destination:
-      namespaceSelector: name == &quot;kube-system&quot;
-      ports: 
-      - 53
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">crd.projectcalico.org/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GlobalNetworkPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">allow-dns-egress</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">selector</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">all()</span>
+  <span class="nt">types</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Egress</span>
+  <span class="nt">egress</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">action</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Allow</span>
+    <span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">UDP</span>  
+    <span class="nt">destination</span><span class="p">:</span>
+      <span class="nt">namespaceSelector</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">name == &quot;kube-system&quot;</span>
+      <span class="nt">ports</span><span class="p">:</span> 
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">53</span>
+</code></pre></div>
+
 
 <p>The following is an example of how to associate a network policy with a service account while preventing users associated with the readonly-sa-group from editing the service account my-sa in the default namespace: </p>
-<pre><code class="yaml">apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: my-sa
-  namespace: default
-  labels: 
-    name: my-sa
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  namespace: default
-  name: readonly-sa-role
-rules:
-# Allows the subject to read a service account called my-sa
-- apiGroups: [&quot;&quot;]
-  resources: [&quot;serviceaccounts&quot;]
-  resourceNames: [&quot;my-sa&quot;]
-  verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  namespace: default
-  name: readonly-sa-rolebinding
-# Binds the readonly-sa-role to the RBAC group called readonly-sa-group.
-subjects:
-- kind: Group 
-  name: readonly-sa-group 
-  apiGroup: rbac.authorization.k8s.io 
-roleRef:
-  kind: Role 
-  name: readonly-sa-role 
-  apiGroup: rbac.authorization.k8s.io
----
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: netpol-sa-demo
-  namespace: default
-# Allows all ingress traffic to services in the default namespace that reference
-# the service account called my-sa
-spec:
-  ingress:
-    - action: Allow
-      source:
-        serviceAccounts:
-          selector: 'name == &quot;my-sa&quot;'
-  selector: all()
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ServiceAccount</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my-sa</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+  <span class="nt">labels</span><span class="p">:</span> 
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my-sa</span>
+<span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Role</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">readonly-sa-role</span>
+<span class="nt">rules</span><span class="p">:</span>
+<span class="c1"># Allows the subject to read a service account called my-sa</span>
+<span class="p p-Indicator">-</span> <span class="nt">apiGroups</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;&quot;</span><span class="p p-Indicator">]</span>
+  <span class="nt">resources</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;serviceaccounts&quot;</span><span class="p p-Indicator">]</span>
+  <span class="nt">resourceNames</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;my-sa&quot;</span><span class="p p-Indicator">]</span>
+  <span class="nt">verbs</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;get&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;watch&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;list&quot;</span><span class="p p-Indicator">]</span>
+<span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">RoleBinding</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">readonly-sa-rolebinding</span>
+<span class="c1"># Binds the readonly-sa-role to the RBAC group called readonly-sa-group.</span>
+<span class="nt">subjects</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Group</span> 
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">readonly-sa-group</span> 
+  <span class="nt">apiGroup</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io</span> 
+<span class="nt">roleRef</span><span class="p">:</span>
+  <span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Role</span> 
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">readonly-sa-role</span> 
+  <span class="nt">apiGroup</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io</span>
+<span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">crd.projectcalico.org/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">NetworkPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">netpol-sa-demo</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="c1"># Allows all ingress traffic to services in the default namespace that reference</span>
+<span class="c1"># the service account called my-sa</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">ingress</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">action</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Allow</span>
+      <span class="nt">source</span><span class="p">:</span>
+        <span class="nt">serviceAccounts</span><span class="p">:</span>
+          <span class="nt">selector</span><span class="p">:</span> <span class="s">&#39;name</span><span class="nv"> </span><span class="s">==</span><span class="nv"> </span><span class="s">&quot;my-sa&quot;&#39;</span>
+  <span class="nt">selector</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">all()</span>
+</code></pre></div>
+
 
 <h3 id="incrementally-add-rules-to-selectively-allow-the-flow-of-traffic-between-namespacespods">Incrementally add rules to selectively allow the flow of traffic between namespaces/pods<a class="headerlink" href="#incrementally-add-rules-to-selectively-allow-the-flow-of-traffic-between-namespacespods" title="Permanent link">&para;</a></h3>
 <p>Start by allowing Pods within a Namespace to communicate with each other and then add custom rules that further restrict Pod to Pod communication within that Namespace. </p>
@@ -801,53 +807,54 @@ spec:
 <p><a href="https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html">AWS VPC Flow Logs</a> captures metadata about the traffic flowing through a VPC, such as source and destination IP address and port along with accepted/dropped packets. This information could be analyzed to look for suspicous or unusual activity between resources within the VPC, including Pods.  However, since the IP addresses of pods frequently change as they are replaced, Flow Logs may not be sufficient on its own.  Calico Enterprise extends the Flow Logs with pod labels and other metadata, making it easier to decipher the traffic flows between pods.</p>
 <h3 id="use-encryption-with-aws-load-balancers">Use encryption with AWS load balancers<a class="headerlink" href="#use-encryption-with-aws-load-balancers" title="Permanent link">&para;</a></h3>
 <p>The <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html">AWS Application Load Balancer</a> (ALB) and <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html">Network Load Balancer</a> (NLB) both have support for transport encryption (SSL and TLS).  The <code>alb.ingress.kubernetes.io/certificate-arn</code> annotation for the ALB lets you to specify which certificates to add to the ALB.  If you omit the annotation the controller will attempt to add certificates to listeners that require it by matching the available <a href="https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html">AWS Certificate Manager (ACM)</a> certificates using the host field. Starting with EKS v1.15 you can use the service.beta.kubernetes.io/aws-load-balancer-ssl-cert annotation with the NLB as shown in the example below. </p>
-<pre><code class="yaml">apiVersion: v1
-kind: Service
-metadata:
-  name: demo-app
-  namespace: default
-  labels:
-    app: demo-app
-  annotations:
-     service.beta.kubernetes.io/aws-load-balancer-type: &quot;nlb&quot;
-     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: &quot;&lt;certificate ARN&gt;&quot;
-     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: &quot;443&quot;
-     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: &quot;http&quot;
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 443
-    targetPort: 80
-    protocol: TCP
-  selector:
-    app: demo-app
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: nginx
-  namespace: default
-  labels:
-    app: demo-app
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: demo-app
-  template:
-    metadata:
-      labels:
-        app: demo-app
-    spec:
-      containers:
-        - name: nginx
-          image: nginx
-          ports:
-            - containerPort: 443
-              protocol: TCP
-            - containerPort: 80
-              protocol: TCP
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Service</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-app</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+  <span class="nt">labels</span><span class="p">:</span>
+    <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-app</span>
+  <span class="nt">annotations</span><span class="p">:</span>
+     <span class="nt">service.beta.kubernetes.io/aws-load-balancer-type</span><span class="p">:</span> <span class="s">&quot;nlb&quot;</span>
+     <span class="nt">service.beta.kubernetes.io/aws-load-balancer-ssl-cert</span><span class="p">:</span> <span class="s">&quot;&lt;certificate</span><span class="nv"> </span><span class="s">ARN&gt;&quot;</span>
+     <span class="nt">service.beta.kubernetes.io/aws-load-balancer-ssl-ports</span><span class="p">:</span> <span class="s">&quot;443&quot;</span>
+     <span class="nt">service.beta.kubernetes.io/aws-load-balancer-backend-protocol</span><span class="p">:</span> <span class="s">&quot;http&quot;</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LoadBalancer</span>
+  <span class="nt">ports</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">443</span>
+    <span class="nt">targetPort</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+    <span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TCP</span>
+  <span class="nt">selector</span><span class="p">:</span>
+    <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-app</span>
+<span class="nn">---</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Deployment</span>
+<span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx</span>
+  <span class="nt">namespace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+  <span class="nt">labels</span><span class="p">:</span>
+    <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-app</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">replicas</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">selector</span><span class="p">:</span>
+    <span class="nt">matchLabels</span><span class="p">:</span>
+      <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-app</span>
+  <span class="nt">template</span><span class="p">:</span>
+    <span class="nt">metadata</span><span class="p">:</span>
+      <span class="nt">labels</span><span class="p">:</span>
+        <span class="nt">app</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-app</span>
+    <span class="nt">spec</span><span class="p">:</span>
+      <span class="nt">containers</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx</span>
+          <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx</span>
+          <span class="nt">ports</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="nt">containerPort</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">443</span>
+              <span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TCP</span>
+            <span class="p p-Indicator">-</span> <span class="nt">containerPort</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+              <span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TCP</span>
+</code></pre></div>
+
 
 <h3 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h3>
 <ul>

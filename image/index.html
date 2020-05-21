@@ -449,12 +449,14 @@
 <h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">&para;</a></h2>
 <h3 id="create-minimal-images">Create minimal images<a class="headerlink" href="#create-minimal-images" title="Permanent link">&para;</a></h3>
 <p>Start by removing all extraneous binaries from the container image.  If you’re using an unfamiliar image from Dockerhub, inspect the image using an application like <a href="https://github.com/wagoodman/dive">Dive</a> which can show you the contents of each of the container’s layers.  Remove all binaries with the SETUID and SETGID bits as they can be used to escalate privilege and consider removing all shells and utilities like nc and curl that can be used for nefarious purposes. You can find the files with SETUID and SETGID bits with the following command:</p>
-<pre><code class="bash">find / -perm +6000 -type f -exec ls -ld {} \;
-</code></pre>
+<div class="codehilite"><pre><span></span><code>find / -perm +6000 -type f -exec ls -ld <span class="o">{}</span> <span class="se">\;</span>
+</code></pre></div>
+
 
 <p>To remove the special permissions from these files, add the following directive to your container image:</p>
-<pre><code class="dockerfile">RUN find / -xdev -perm +6000 -type f -exec chmod a-s {} \; || true
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="k">RUN</span> find / -xdev -perm +6000 -type f -exec chmod a-s <span class="o">{}</span> <span class="se">\;</span> <span class="o">||</span> true
+</code></pre></div>
+
 
 <p>Colloquially, this is known as de-fanging your image. </p>
 <h3 id="use-multi-stage-builds">Use multi-stage builds<a class="headerlink" href="#use-multi-stage-builds" title="Permanent link">&para;</a></h3>
@@ -469,45 +471,47 @@
 <p>A Kubernetes validation webhook could also be used to validate that images are free of critical vulnerabilities.  Validation webhooks are invoked prior to the Kubernetes API.  They are typically used to reject requests that don't comply with the validation criteria defined in the webhook.  <a href="https://github.com/jicowan/ecr-validation-webhook">This</a> is an example of a serverless webhook that calls the ECR describeImageScanFindings API to deteremine whether a pod is pulling an image with critical vulnerabilities.  If vulnerabilities are found, the pod is rejected and a message with list of CVEs is returned as an Event.</p>
 <h3 id="create-iam-policies-for-ecr-repositories">Create IAM policies for ECR repositories<a class="headerlink" href="#create-iam-policies-for-ecr-repositories" title="Permanent link">&para;</a></h3>
 <p>Nowadays, it is not uncommon for an organization to have multiple development teams operating independently within a shared AWS account.  If these teams don't need to share assets, you may want to create a set of IAM policies that restrict access to the repositories each team can interact with.  A good way to implement this is by using ECR <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/Repositories.html#repository-concepts">namespaces</a>. Namespaces are a way to group similar repositories together.  For example, all of the registries for team A can be prefaced with the team-a/ while those for team B can use the team-b/ prefix. The policy to restrict access might look like the following: </p>
-<pre><code class="json">{
-&quot;Version&quot;: &quot;2012-10-17&quot;,
-&quot;Statement&quot;: [{
-  &quot;Sid&quot;: &quot;AllowPushPull&quot;,
-  &quot;Effect&quot;: &quot;Allow&quot;,
-  &quot;Principal&quot;: {
-    &quot;AWS&quot;: &quot;arn:aws:iam::123456789012:role/&lt;team_a_role_name&gt;&quot;
-  },
-  &quot;Action&quot;: [
-    &quot;ecr:GetDownloadUrlForLayer&quot;,
-    &quot;ecr:BatchGetImage&quot;,
-    &quot;ecr:BatchCheckLayerAvailability&quot;,
-    &quot;ecr:PutImage&quot;,
-    &quot;ecr:InitiateLayerUpload&quot;,
-    &quot;ecr:UploadLayerPart&quot;,
-    &quot;ecr:CompleteLayerUpload&quot;
-  ],
-  &quot;Resource&quot;: [
-    &quot;arn:aws:ecr:region:123456789012:repository/team-a/*&quot;
-  ]
-  }]
-}
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="nt">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+<span class="nt">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[{</span>
+  <span class="nt">&quot;Sid&quot;</span><span class="p">:</span> <span class="s2">&quot;AllowPushPull&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Principal&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;AWS&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:iam::123456789012:role/&lt;team_a_role_name&gt;&quot;</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;Action&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;ecr:GetDownloadUrlForLayer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ecr:BatchGetImage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ecr:BatchCheckLayerAvailability&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ecr:PutImage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ecr:InitiateLayerUpload&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ecr:UploadLayerPart&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ecr:CompleteLayerUpload&quot;</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;Resource&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;arn:aws:ecr:region:123456789012:repository/team-a/*&quot;</span>
+  <span class="p">]</span>
+  <span class="p">}]</span>
+<span class="p">}</span>
+</code></pre></div>
+
 
 <h3 id="consider-using-ecr-private-endpoints">Consider using ECR private endpoints<a class="headerlink" href="#consider-using-ecr-private-endpoints" title="Permanent link">&para;</a></h3>
 <p>The ECR API has a public endpoint.  Consequently, ECR registries can be accessed from the Internet so long as the request has been authenticated and authorized by IAM. For those who need to operate in a sandboxed environment where the cluster VPC lacks an Internet Gateway (IGW), you can configure a private endpoint for ECR.  Creating a private endpoint enables you to privately access the ECR API through a private IP address instead of routing traffic across the Internet. For additional information on this topic, see https://docs.aws.amazon.com/AmazonECR/latest/userguide/vpc-endpoints.html.</p>
 <h3 id="implement-endpoint-policies-for-ecr">Implement endpoint policies for ECR<a class="headerlink" href="#implement-endpoint-policies-for-ecr" title="Permanent link">&para;</a></h3>
 <p>The default endpoint policy for allows access to all ECR repositories within a region.  This might allow an attacker/insider to exfiltrate data by packaging it as a container image and pushing it to a registry in another AWS account.  Mitigating this risk involves creating an endpoint policy that limits API access to ECR respositories. For example, the following policy allows all AWS principles in your account to perform all actions against your and only your ECR repositories: </p>
-<pre><code class="json">{
-    &quot;Statement&quot;: [{
-    &quot;Sid&quot;: &quot;LimitECRAccess&quot;,
-    &quot;Principal&quot;: &quot;*&quot;,
-    &quot;Action&quot;: &quot;*&quot;,
-    &quot;Effect&quot;: &quot;Allow&quot;,
-    &quot;Resource&quot;: &quot;arn:aws:ecr:region:&lt;your_account_id&gt;:repository/*&quot;
-    },
-  ]
-}
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+    <span class="nt">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[{</span>
+    <span class="nt">&quot;Sid&quot;</span><span class="p">:</span> <span class="s2">&quot;LimitECRAccess&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;Principal&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;Action&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;Resource&quot;</span><span class="p">:</span> <span class="s2">&quot;arn:aws:ecr:region:&lt;your_account_id&gt;:repository/*&quot;</span>
+    <span class="p">},</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
 
 <p>You can enhance this further by setting a condition that uses the new <code>PrincipalOrgID</code> attribute which will prevent pushing/pulling of images by an IAM principle that is not part of your AWS Organization. See, <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-principalorgid">aws:PrincipalOrgID</a> for additional details. </p>
 <p>We recommended applying the same policy to both the <code>com.amazonaws.&lt;region&gt;.ecr.dkr</code> and the <code>com.amazonaws.&lt;region&gt;.ecr.api</code> endpoints.</p>
@@ -551,29 +555,30 @@
 <p>Linting can be used to verify that your Dockerfiles are adhering to a set of predefined guidelines, e.g. the inclusion of the <code>USER</code> directive or the requirement that all images be tagged.  <a href="https://github.com/projectatomic/dockerfile_lint">dockerfile_lint</a> is an open source project from RedHat that verifies common best practices and includes a rule engine that you can use to build your own rules for linting Dockerfiles. It can be incorporated into a CI pipeline, in that builds with Dockerfiles that violate a rule will automatically fail. </p>
 <h3 id="build-images-from-scratch">Build images from Scratch<a class="headerlink" href="#build-images-from-scratch" title="Permanent link">&para;</a></h3>
 <p>Reducing the attack surface of your container images should be primary aim when building images.  The ideal way to do this is by creating minimal images that are devoid of binaries that can be used to exploit vulnerabilities. Fortunately, Docker has a mechanism to create images from <a href="https://docs.docker.com/develop/develop-images/baseimages/#create-a-simple-parent-image-using-scratch"><code>scratch</code></a>. With langages like Go, you can create a static linked binary and reference it in your Dockerfile as in this example: </p>
-<pre><code class="dockerfile">############################
-# STEP 1 build executable binary
-############################
-FROM golang:alpine AS builder
-# Install git.
-# Git is required for fetching the dependencies.
-RUN apk update &amp;&amp; apk add --no-cache git
-WORKDIR $GOPATH/src/mypackage/myapp/
-COPY . .
-# Fetch dependencies.
-# Using go get.
-RUN go get -d -v
-# Build the binary.
-RUN go build -o /go/bin/hello
-############################
-# STEP 2 build a small image
-############################
-FROM scratch
-# Copy our static executable.
-COPY --from=builder /go/bin/hello /go/bin/hello
-# Run the hello binary.
-ENTRYPOINT [&quot;/go/bin/hello&quot;]
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="c">############################</span>
+<span class="c"># STEP 1 build executable binary</span>
+<span class="c">############################</span>
+<span class="k">FROM</span> <span class="s">golang:alpine</span> <span class="k">AS</span> <span class="s">builder</span>
+<span class="c"># Install git.</span>
+<span class="c"># Git is required for fetching the dependencies.</span>
+<span class="k">RUN</span> apk update <span class="o">&amp;&amp;</span> apk add --no-cache git
+<span class="k">WORKDIR</span><span class="s"> $GOPATH/src/mypackage/myapp/</span>
+<span class="k">COPY</span> . .
+<span class="c"># Fetch dependencies.</span>
+<span class="c"># Using go get.</span>
+<span class="k">RUN</span> go get -d -v
+<span class="c"># Build the binary.</span>
+<span class="k">RUN</span> go build -o /go/bin/hello
+<span class="c">############################</span>
+<span class="c"># STEP 2 build a small image</span>
+<span class="c">############################</span>
+<span class="k">FROM</span> <span class="s">scratch</span>
+<span class="c"># Copy our static executable.</span>
+<span class="k">COPY</span> --from<span class="o">=</span>builder /go/bin/hello /go/bin/hello
+<span class="c"># Run the hello binary.</span>
+<span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&quot;/go/bin/hello&quot;</span><span class="p">]</span>
+</code></pre></div>
+
 
 <p>This creates a container image that consists of your application and nothing else, making it extremely secure.</p>
 <h3 id="sign-your-images">Sign your images<a class="headerlink" href="#sign-your-images" title="Permanent link">&para;</a></h3>

@@ -539,130 +539,134 @@
 <h3 id="restrict-the-containers-that-can-run-as-privileged">Restrict the containers that can run as privileged<a class="headerlink" href="#restrict-the-containers-that-can-run-as-privileged" title="Permanent link">&para;</a></h3>
 <p>As mentioned, containers that run as privileged inherit all of the Linux capabilities assigned to root on the host.  Seldom do containers need these types of privileges to function properly.  You can reject pods with containers configured to run as privileged by creating a <a href="https://kubernetes.io/docs/concepts/policy/pod-security-policy/">pod security policy</a>.  You can think of a pod security policy as a set of requirements that pods have to meet before they can be created.  If you elect to use pod security policies, you will need to create a role binding that allows service accounts to read your pod security policies. </p>
 <p>When you provision an EKS cluster, a pod security policy called <code>eks.privileged</code> is automatically created.  The manifest for that policy appears below: </p>
-<pre><code class="yaml">apiVersion: extensions/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  annotations:
-    kubernetes.io/description: privileged allows full unrestricted access to pod features,
-      as if the PodSecurityPolicy controller was not enabled.
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
-  labels:
-    eks.amazonaws.com/component: pod-security-policy
-    kubernetes.io/cluster-service: &quot;true&quot;
-  name: eks.privileged
-spec:
-  allowPrivilegeEscalation: true
-  allowedCapabilities:
-  - '*'
-  fsGroup:
-    rule: RunAsAny
-  hostIPC: true
-  hostNetwork: true
-  hostPID: true
-  hostPorts:
-  - max: 65535
-    min: 0
-  privileged: true
-  runAsUser:
-    rule: RunAsAny
-  seLinux:
-    rule: RunAsAny
-  supplementalGroups:
-    rule: RunAsAny
-  volumes:
-  - '*'
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">extensions/v1beta1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PodSecurityPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">annotations</span><span class="p">:</span>
+    <span class="nt">kubernetes.io/description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">privileged allows full unrestricted access to pod features,</span>
+      <span class="l l-Scalar l-Scalar-Plain">as if the PodSecurityPolicy controller was not enabled.</span>
+    <span class="nt">seccomp.security.alpha.kubernetes.io/allowedProfileNames</span><span class="p">:</span> <span class="s">&#39;*&#39;</span>
+  <span class="nt">labels</span><span class="p">:</span>
+    <span class="nt">eks.amazonaws.com/component</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pod-security-policy</span>
+    <span class="nt">kubernetes.io/cluster-service</span><span class="p">:</span> <span class="s">&quot;true&quot;</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">eks.privileged</span>
+<span class="nt">spec</span><span class="p">:</span>
+  <span class="nt">allowPrivilegeEscalation</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">allowedCapabilities</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;*&#39;</span>
+  <span class="nt">fsGroup</span><span class="p">:</span>
+    <span class="nt">rule</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">RunAsAny</span>
+  <span class="nt">hostIPC</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">hostNetwork</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">hostPID</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">hostPorts</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">65535</span>
+    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+  <span class="nt">privileged</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">runAsUser</span><span class="p">:</span>
+    <span class="nt">rule</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">RunAsAny</span>
+  <span class="nt">seLinux</span><span class="p">:</span>
+    <span class="nt">rule</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">RunAsAny</span>
+  <span class="nt">supplementalGroups</span><span class="p">:</span>
+    <span class="nt">rule</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">RunAsAny</span>
+  <span class="nt">volumes</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;*&#39;</span>
+</code></pre></div>
+
 
 <p>This PSP allows an authenticated user to run privileged containers across all namespaces within the cluster.  While this may seem overly permissive at first, there are certain applications/plug-ins such as the AWS VPC CNI and kube-proxy that have to run as privileged because they are responsible for configuring the host’s network settings. Furthermore, this policy provides backward compatibility with earlier versions of Kubernetes that lacked support for pod security policies.    </p>
 <p>The binding shown below is what binds the ClusterRole <code>eks:podsecuritypolicy:privileged</code> to the <code>system:authenticated</code> RBAC group. </p>
-<pre><code class="yaml">apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  annotations: 
-    kubernetes.io/description: Allow all authenticated users to create privileged
-  labels:
-    eks.amazonaws.com/component: pod-security-policy
-    kubernetes.io/cluster-service: &quot;true&quot;
-  name: eks:podsecuritypolicy:authenticated
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: eks:podsecuritypolicy:privileged
-subjects:
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: system:authenticated
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ClusterRoleBinding</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">annotations</span><span class="p">:</span> 
+    <span class="nt">kubernetes.io/description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Allow all authenticated users to create privileged</span>
+  <span class="nt">labels</span><span class="p">:</span>
+    <span class="nt">eks.amazonaws.com/component</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pod-security-policy</span>
+    <span class="nt">kubernetes.io/cluster-service</span><span class="p">:</span> <span class="s">&quot;true&quot;</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">eks:podsecuritypolicy:authenticated</span>
+<span class="nt">roleRef</span><span class="p">:</span>
+  <span class="nt">apiGroup</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io</span>
+  <span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ClusterRole</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">eks:podsecuritypolicy:privileged</span>
+<span class="nt">subjects</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">apiGroup</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io</span>
+  <span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Group</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">system:authenticated</span>
+</code></pre></div>
+
 
 <p>Lastly, the ClusterRole below allow all bindings that reference it to use the <code>eks.privileged</code> PodSecurityPolicy.</p>
-<pre><code class="yaml">apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    eks.amazonaws.com/component: pod-security-policy
-    kubernetes.io/cluster-service: &quot;true&quot;
-  name: eks:podsecuritypolicy:privileged
-rules:
-- apiGroups:
-  - policy
-  resourceNames:
-  - eks.privileged
-  resources:
-  - podsecuritypolicies
-  verbs:
-  - use
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ClusterRole</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">labels</span><span class="p">:</span>
+    <span class="nt">eks.amazonaws.com/component</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pod-security-policy</span>
+    <span class="nt">kubernetes.io/cluster-service</span><span class="p">:</span> <span class="s">&quot;true&quot;</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">eks:podsecuritypolicy:privileged</span>
+<span class="nt">rules</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">apiGroups</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">policy</span>
+  <span class="nt">resourceNames</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">eks.privileged</span>
+  <span class="nt">resources</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">podsecuritypolicies</span>
+  <span class="nt">verbs</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">use</span>
+</code></pre></div>
+
 
 <p>As a best practice we recommend that you scope the binding for privileged pods to service accounts within a particular namespace, e.g. kube-system, and limiting access to that namespace.  For all other serviceaccounts/namespaces, we recommend implementing a more restrictive policy such as this: </p>
-<pre><code class="yaml">apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-    name: restricted
-    annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default,runtime/default'
-    apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
-    seccomp.security.alpha.kubernetes.io/defaultProfileName:  'runtime/default'
-    apparmor.security.beta.kubernetes.io/defaultProfileName:  'runtime/default'
-spec:
-    privileged: false
-    # Required to prevent escalations to root.
-    allowPrivilegeEscalation: false
-    # This is redundant with non-root + disallow privilege escalation,
-    # but we can provide it for defense in depth.
-    requiredDropCapabilities:
-    - ALL
-    # Allow core volume types.
-    volumes:
-    - 'configMap'
-    - 'emptyDir'
-    - 'projected'
-    - 'secret'
-    - 'downwardAPI'
-    # Assume that persistentVolumes set up by the cluster admin are safe to use.
-    - 'persistentVolumeClaim'
-    hostNetwork: false
-    hostIPC: false
-    hostPID: false
-    runAsUser:
-    # Require the container to run without root privileges.
-    rule: 'MustRunAsNonRoot'
-    seLinux:
-    # This policy assumes the nodes are using AppArmor rather than SELinux.
-    rule: 'RunAsAny'
-    supplementalGroups:
-    rule: 'MustRunAs'
-    ranges:
-        # Forbid adding the root group.
-        - min: 1
-        max: 65535
-    fsGroup:
-    rule: 'MustRunAs'
-    ranges:
-        # Forbid adding the root group.
-        - min: 1
-        max: 65535
-    readOnlyRootFilesystem: false
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">policy/v1beta1</span>
+<span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PodSecurityPolicy</span>
+<span class="nt">metadata</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">restricted</span>
+    <span class="nt">annotations</span><span class="p">:</span>
+    <span class="nt">seccomp.security.alpha.kubernetes.io/allowedProfileNames</span><span class="p">:</span> <span class="s">&#39;docker/default,runtime/default&#39;</span>
+    <span class="nt">apparmor.security.beta.kubernetes.io/allowedProfileNames</span><span class="p">:</span> <span class="s">&#39;runtime/default&#39;</span>
+    <span class="nt">seccomp.security.alpha.kubernetes.io/defaultProfileName</span><span class="p">:</span>  <span class="s">&#39;runtime/default&#39;</span>
+    <span class="nt">apparmor.security.beta.kubernetes.io/defaultProfileName</span><span class="p">:</span>  <span class="s">&#39;runtime/default&#39;</span>
+<span class="nt">spec</span><span class="p">:</span>
+    <span class="nt">privileged</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="c1"># Required to prevent escalations to root.</span>
+    <span class="nt">allowPrivilegeEscalation</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="c1"># This is redundant with non-root + disallow privilege escalation,</span>
+    <span class="c1"># but we can provide it for defense in depth.</span>
+    <span class="nt">requiredDropCapabilities</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ALL</span>
+    <span class="c1"># Allow core volume types.</span>
+    <span class="nt">volumes</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;configMap&#39;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;emptyDir&#39;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;projected&#39;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;secret&#39;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;downwardAPI&#39;</span>
+    <span class="c1"># Assume that persistentVolumes set up by the cluster admin are safe to use.</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;persistentVolumeClaim&#39;</span>
+    <span class="nt">hostNetwork</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="nt">hostIPC</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="nt">hostPID</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="nt">runAsUser</span><span class="p">:</span>
+    <span class="c1"># Require the container to run without root privileges.</span>
+    <span class="nt">rule</span><span class="p">:</span> <span class="s">&#39;MustRunAsNonRoot&#39;</span>
+    <span class="nt">seLinux</span><span class="p">:</span>
+    <span class="c1"># This policy assumes the nodes are using AppArmor rather than SELinux.</span>
+    <span class="nt">rule</span><span class="p">:</span> <span class="s">&#39;RunAsAny&#39;</span>
+    <span class="nt">supplementalGroups</span><span class="p">:</span>
+    <span class="nt">rule</span><span class="p">:</span> <span class="s">&#39;MustRunAs&#39;</span>
+    <span class="nt">ranges</span><span class="p">:</span>
+        <span class="c1"># Forbid adding the root group.</span>
+        <span class="p p-Indicator">-</span> <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+        <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">65535</span>
+    <span class="nt">fsGroup</span><span class="p">:</span>
+    <span class="nt">rule</span><span class="p">:</span> <span class="s">&#39;MustRunAs&#39;</span>
+    <span class="nt">ranges</span><span class="p">:</span>
+        <span class="c1"># Forbid adding the root group.</span>
+        <span class="p p-Indicator">-</span> <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+        <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">65535</span>
+    <span class="nt">readOnlyRootFilesystem</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+
 
 <p>This policy prevents pods from running as privileged or escalating privileges.  It also restricts the types of volumes that can be mounted and the root supplemental groups that can be added. </p>
 <div class="admonition attention">
@@ -675,20 +679,22 @@ spec:
 <p>While this conveniently lets you to build/run images in Docker containers, you're basically relinquishing complete control of the node to the process running in the container. If you need to build container images on Kubernetes use <a href="https://github.com/GoogleContainerTools/kaniko">Kaniko</a>, <a href="https://github.com/containers/buildah">buildah</a>, <a href="https://github.com/genuinetools/img">img</a>, or a build service like <a href="https://docs.aws.amazon.com/codebuild/latest/userguide/welcome.html">CodeBuild</a> instead. </p>
 <h3 id="restrict-the-use-of-hostpath-or-if-hostpath-is-necessary-restrict-which-prefixes-can-be-used-and-configure-the-volume-as-read-only">Restrict the use of hostPath or if hostPath is necessary restrict which prefixes can be used and configure the volume as read-only<a class="headerlink" href="#restrict-the-use-of-hostpath-or-if-hostpath-is-necessary-restrict-which-prefixes-can-be-used-and-configure-the-volume-as-read-only" title="Permanent link">&para;</a></h3>
 <p><code>hostPath</code> is a volume that mounts a directory from the host directly to the container.  Rarely will pods need this type of access, but if they do, you need to be aware of the risks.  By default pods that run as root will have write access to the file system exposed by hostPath.  This could allow an attacker to modify the kubelet settings, create symbolic links to directories or files not directly exposed by the hostPath, e.g. /etc/shadow, install ssh keys, read secrets mounted to the host, and other malicious things. To mitigate the risks from hostPath, configure the <code>spec.containers.volumeMounts</code> as <code>readOnly</code>, for example: </p>
-<pre><code class="yaml">volumeMounts:
-- name: hostPath-volume
-    readOnly: true
-    mountPath: /host-path
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">volumeMounts</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">hostPath-volume</span>
+    <span class="l l-Scalar l-Scalar-Plain">readOnly</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="l l-Scalar l-Scalar-Plain">mountPath</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/host-path</span>
+</code></pre></div>
+
 
 <p>You should also use a pod security policy to restrict the directories that can be used by <code>hostPath</code> volumes.  For example the following PSP excerpt only allows paths that begin with <code>/foo</code>.  It will prevent containers from traversing the host file system from outside the prefix: </p>
-<pre><code class="yaml">allowedHostPaths:
-# This allows &quot;/foo&quot;, &quot;/foo/&quot;, &quot;/foo/bar&quot; etc., but
-# disallows &quot;/fool&quot;, &quot;/etc/foo&quot; etc.
-# &quot;/foo/../&quot; is never valid.
-- pathPrefix: &quot;/foo&quot;
-    readOnly: true # only allow read-only mounts
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="nt">allowedHostPaths</span><span class="p">:</span>
+<span class="c1"># This allows &quot;/foo&quot;, &quot;/foo/&quot;, &quot;/foo/bar&quot; etc., but</span>
+<span class="c1"># disallows &quot;/fool&quot;, &quot;/etc/foo&quot; etc.</span>
+<span class="c1"># &quot;/foo/../&quot; is never valid.</span>
+<span class="p p-Indicator">-</span> <span class="nt">pathPrefix</span><span class="p">:</span> <span class="s">&quot;/foo&quot;</span>
+    <span class="nt">readOnly</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1"># only allow read-only mounts</span>
+</code></pre></div>
+
 
 <h3 id="set-requests-and-limits-for-each-container-to-avoid-resource-contention-and-dos-attacks">Set requests and limits for each container to avoid resource contention and DoS attacks<a class="headerlink" href="#set-requests-and-limits-for-each-container-to-avoid-resource-contention-and-dos-attacks" title="Permanent link">&para;</a></h3>
 <p>A pod without requests or limits can theoretically consume all of the resources available on a host.  As additional pods are scheduled onto a node, the node may experience CPU or memory pressure which can cause the Kubelet to terminate or evict pods from the node.  While you can’t prevent this from happening all together, setting requests and limits will help minimize resource contention and mitigate the risk from poorly written applications that consume an excessive amount of resources. </p>
