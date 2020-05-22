@@ -692,7 +692,10 @@
 <h3 id="network-policies">Network policies<a class="headerlink" href="#network-policies" title="Permanent link">&para;</a></h3>
 <p>By default, all pods in a Kubernetes cluster are allowed to communicate with each other. This behavior can be altered using network policies.</p>
 <p>Network policies restrict communication between pods using labels or IP address ranges. In a multi-tenant environment where strict network isolation between tenants is required, we recommend starting with a default rule that denies communication between pods, and another rule that allows all pods to query the DNS server for name resolution. With that in place, you can begin adding more permissive rules that allow for communication within a namespace. This can be further refined as required. </p>
-<p>!!! attention Network policies are necessary but not sufficient. The enforcement of network policies requires a policy engine such as Calico or Cilium.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Network policies are necessary but not sufficient. The enforcement of network policies requires a policy engine such as Calico or Cilium.</p>
+</div>
 <h3 id="role-based-access-control-rbac">Role-based access control (RBAC)<a class="headerlink" href="#role-based-access-control-rbac" title="Permanent link">&para;</a></h3>
 <p>Roles and role bindings are the Kubernetes objects used to enforce role-based access control (RBAC) in Kubernetes. <strong>Roles</strong> contain lists of actions that can be performed against objects in your cluster. <strong>Role bindings</strong> specify the individuals or groups to whom the roles apply.  In the enterprise and KaaS settings, RBAC can be used to permit administration of objects by selected groups or individuals.</p>
 <h3 id="quotas">Quotas<a class="headerlink" href="#quotas" title="Permanent link">&para;</a></h3>
