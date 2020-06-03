@@ -486,6 +486,10 @@
 </code></pre></div>
 
 
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>As of May 28,2020 all data written to the ephemeral volume in EKS Fargate pods is encrypted by default using an industry-standard AES-256 cryptographic algorithm. No modifications to your application are necessary as encryption and decryption is handled by the service. </p>
+</div>
 <h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">&para;</a></h2>
 <h3 id="encrypt-data-at-rest">Encrypt data at rest<a class="headerlink" href="#encrypt-data-at-rest" title="Permanent link">&para;</a></h3>
 <p>Encrypting data at rest is considered a best practice.  If you're unsure whether encryption is necessary, encrypt your data. </p>
