@@ -362,6 +362,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#grant-least-privileged-access-to-applications" class="md-nav__link">
+    Grant least privileged access to applications
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#alternative-approaches" class="md-nav__link">
     Alternative approaches
   </a>
@@ -653,6 +660,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#grant-least-privileged-access-to-applications" class="md-nav__link">
+    Grant least privileged access to applications
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#alternative-approaches" class="md-nav__link">
     Alternative approaches
   </a>
@@ -874,6 +888,8 @@
 
 <h3 id="scope-the-iam-role-trust-policy-for-irsa-to-the-service-account-name">Scope the IAM Role trust policy for IRSA to the service account name<a class="headerlink" href="#scope-the-iam-role-trust-policy-for-irsa-to-the-service-account-name" title="Permanent link">&para;</a></h3>
 <p>The trust policy can be scoped to a Namespace or a specific service account within a Namespace. When using IRSA it's best to make the role trust policy as explicit as possible by including the service account name. This will effectively prevent other Pods within the same Namespace from assuming the role. The CLI <code>eksctl</code> will do this automatically when you use it to create service accounts/IAM roles. See https://eksctl.io/usage/iamserviceaccounts/ for further information. </p>
+<h3 id="grant-least-privileged-access-to-applications">Grant least privileged access to applications<a class="headerlink" href="#grant-least-privileged-access-to-applications" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/princespaghetti/actionhero">Action Hero</a> is a utility that you can run alongside your application to identify the AWS API calls and corresponding IAM permissions your application needs to function properly.  It is similar to <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html">IAM Access Advisor</a> in that it helps you gradually limit the scope of IAM roles assigned to applications. Consult the documentation on granting <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege">least privileged access</a> to AWS resources for further information.</p>
 <h3 id="alternative-approaches">Alternative approaches<a class="headerlink" href="#alternative-approaches" title="Permanent link">&para;</a></h3>
 <p>While IRSA is the <em>preferred way</em> to assign an AWS "identity" to a pod, it requires that you include recent version of the AWS SDKs in your application. For a complete listing of the SDKs that currently support IRSA, see https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-minimum-sdk.html. If you have an application that you can't immediately update with a IRSA-compatible SDK, there are several community-built solutions available for assigning IAM roles to Kubernetes pods, including <a href="https://github.com/jtblin/kube2iam">kube2iam</a> and <a href="https://github.com/uswitch/kiam">kiam</a>.  Although AWS doesn't endorse or condone the use of these solutions, they are frequently used by the community at large to achieve similar results as IRSA. </p>
                 
