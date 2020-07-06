@@ -15,7 +15,7 @@
     
     
       
-        <title>Image security - EKS Best Practices Guide for Security</title>
+        <title>Image Security - EKS Best Practices Guide for Security</title>
       
     
     
@@ -76,7 +76,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Image security
+              Image Security
             
           </span>
         </div>
@@ -299,6 +299,150 @@
     <a href="../incidents/" title="Incident Response and Forensics" class="md-nav__link">
       Incident Response and Forensics
     </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Image Security
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,9H17V7H3V9M3,13H17V11H3V13M3,17H17V15H3V17M19,17H21V15H19V17M19,7V9H21V7H19M19,13H21V11H19V13Z" /></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Image Security" class="md-nav__link md-nav__link--active">
+      Image Security
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#recommendations" class="md-nav__link">
+    Recommendations
+  </a>
+  
+    <nav class="md-nav" aria-label="Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-minimal-images" class="md-nav__link">
+    Create minimal images
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-multi-stage-builds" class="md-nav__link">
+    Use multi-stage builds
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scan-images-for-vulnerabilities-regularly" class="md-nav__link">
+    Scan images for vulnerabilities regularly
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-iam-policies-for-ecr-repositories" class="md-nav__link">
+    Create IAM policies for ECR repositories
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consider-using-ecr-private-endpoints" class="md-nav__link">
+    Consider using ECR private endpoints
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implement-endpoint-policies-for-ecr" class="md-nav__link">
+    Implement endpoint policies for ECR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-set-of-curated-images" class="md-nav__link">
+    Create a set of curated images
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-the-user-directive-to-your-dockerfiles-to-run-as-a-non-root-user" class="md-nav__link">
+    Add the USER directive to your Dockerfiles to run as a non-root user
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lint-your-dockerfiles" class="md-nav__link">
+    Lint your Dockerfiles
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-images-from-scratch" class="md-nav__link">
+    Build images from Scratch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sign-your-images" class="md-nav__link">
+    Sign your images
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tools" class="md-nav__link">
+    Tools
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
     
@@ -609,6 +753,27 @@
       
         
 <footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../incidents/" title="Incident Response and Forensics" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Incident Response and Forensics
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
