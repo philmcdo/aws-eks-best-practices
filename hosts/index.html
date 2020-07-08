@@ -585,47 +585,111 @@
                 
                 
                 <h1 id="protecting-the-infrastructure-hosts">Protecting the infrastructure (hosts)<a class="headerlink" href="#protecting-the-infrastructure-hosts" title="Permanent link">&para;</a></h1>
-<p>Inasmuch as it's important to secure your container images, it's equally important to safeguard the infrastructure that runs them. This section explores different ways to mitigate risks from attacks launched directly against the host.  These guidelines should be used in conjunction with those outlined in the <a href="../runtime/">Runtime Security</a> section. </p>
+<p>Inasmuch as it's important to secure your container images, it's equally important to safeguard the infrastructure that runs them. This section explores different ways to mitigate risks from attacks launched directly against the host.  These guidelines should be used in conjunction with those outlined in the <a href="../runtime/">Runtime Security</a> section.</p>
 <h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">&para;</a></h2>
 <h3 id="use-an-os-optimized-for-running-containers">Use an OS optimized for running containers<a class="headerlink" href="#use-an-os-optimized-for-running-containers" title="Permanent link">&para;</a></h3>
-<p>Conside using Flatcar Linux, Project Atomic, RancherOS, and <a href="https://github.com/bottlerocket-os/bottlerocket/">Bottlerocket</a> (currently in preview), a special purpose OS from AWS designed for running Linux containers.  It includes a reduced attack surface, a disk image that is verified on boot, and enforced permission boundaries using SELinux. </p>
+<p>Consider using Flatcar Linux, Project Atomic, RancherOS, and <a href="https://github.com/bottlerocket-os/bottlerocket/">Bottlerocket</a> (currently in preview), a special purpose OS from AWS designed for running Linux containers.  It includes a reduced attack surface, a disk image that is verified on boot, and enforced permission boundaries using SELinux.</p>
 <h3 id="treat-your-infrastructure-as-immutable-and-automate-the-replacement-of-your-worker-nodes">Treat your infrastructure as immutable and automate the replacement of your worker nodes<a class="headerlink" href="#treat-your-infrastructure-as-immutable-and-automate-the-replacement-of-your-worker-nodes" title="Permanent link">&para;</a></h3>
-<p>Rather than performing in-place upgrades, replace your workers when a new patch or update becomes available. This can be approached a couple of ways. You can either add instances to an existing autoscaling group using the latest AMI as you sequentially cordon and drain nodes until all of the nodes in the group have been replaced with the latest AMI.  Alternatively, you can add instances to a new node group while you sequentially cordon and drain nodes from the old node group until all of the nodes have been replaced.  EKS <a href="https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html">managed node groups</a> uses the second approach and will present an option to upgrade workers when a new AMI becomes available. <code>eksctl</code> also has a mechanism for creating node groups with the latest AMI and for gracefully cordoning and draining pods from nodes groups before the instances are terminated. If you decide to use a different method for replacing your worker nodes, it is strongly recommended that you automate the process to minimize human oversight as you will likely need to replace workers regularly as new updates/patches are released and when the control plane is upgraded. </p>
-<p>With EKS Fargate, AWS will automatically update the underlying infrastructure as updates become available.  Oftentimes this can be done seamlessly, but there may be times when an update will cause your task to be rescheduled.  Hence, we recommend that you create deployments with multiple replicas when running your application as a Fargate pod. </p>
+<p>Rather than performing in-place upgrades, replace your workers when a new patch or update becomes available. This can be approached a couple of ways. You can either add instances to an existing autoscaling group using the latest AMI as you sequentially cordon and drain nodes until all of the nodes in the group have been replaced with the latest AMI.  Alternatively, you can add instances to a new node group while you sequentially cordon and drain nodes from the old node group until all of the nodes have been replaced.  EKS <a href="https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html">managed node groups</a> uses the second approach and will present an option to upgrade workers when a new AMI becomes available. <code>eksctl</code> also has a mechanism for creating node groups with the latest AMI and for gracefully cordoning and draining pods from nodes groups before the instances are terminated. If you decide to use a different method for replacing your worker nodes, it is strongly recommended that you automate the process to minimize human oversight as you will likely need to replace workers regularly as new updates/patches are released and when the control plane is upgraded.</p>
+<p>With EKS Fargate, AWS will automatically update the underlying infrastructure as updates become available.  Oftentimes this can be done seamlessly, but there may be times when an update will cause your task to be rescheduled.  Hence, we recommend that you create deployments with multiple replicas when running your application as a Fargate pod.</p>
 <h3 id="periodically-run-kube-bench-to-verify-compliance-with-cis-benchmarks-for-kubernetes">Periodically run kube-bench to verify compliance with <a href="https://www.cisecurity.org/benchmark/kubernetes/">CIS benchmarks for Kubernetes</a><a class="headerlink" href="#periodically-run-kube-bench-to-verify-compliance-with-cis-benchmarks-for-kubernetes" title="Permanent link">&para;</a></h3>
-<p>When running <a href="https://github.com/aquasecurity/kube-bench">kube-bench</a> against an EKS cluster, follow these instructions from Aqua Security, https://github.com/aquasecurity/kube-bench#running-in-an-eks-cluster. </p>
+<p>When running <a href="https://github.com/aquasecurity/kube-bench">kube-bench</a> against an EKS cluster, follow these instructions from Aqua Security, https://github.com/aquasecurity/kube-bench#running-in-an-eks-cluster.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
-<p>False positives may appear in the report because of the way the EKS optimized AMI configures the kubelet.  The issue is currently being tracked on <a href="https://github.com/aquasecurity/kube-bench/issues/571">GitHub</a>. </p>
+<p>False positives may appear in the report because of the way the EKS optimized AMI configures the kubelet.  The issue is currently being tracked on <a href="https://github.com/aquasecurity/kube-bench/issues/571">GitHub</a>.</p>
 </div>
 <h3 id="minimize-access-to-worker-nodes">Minimize access to worker nodes<a class="headerlink" href="#minimize-access-to-worker-nodes" title="Permanent link">&para;</a></h3>
 <p>Instead of enabling SSH access, use <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html">SSM Session Manager</a> when you need to remote into a host.  Unlike SSH keys which can be lost, copied, or shared, Session Manager allows you to control access to EC2 instances using IAM.  Moreover, it provides an audit trail and log of the commands that were run on the instance.</p>
-<p>At present, you cannot use custom AMIs with Managed Node Groups or modify the EC2 launch template for managed workers.  This presents a "chicken and egg problem", i.e. how can you use the SSM agent to remotely access these instances without using SSH to install the SSM agent first? As a temporary stop-gap you can run a privileged <a href="https://github.com/jicowan/ssm-agent-daemonset">DaemonSet</a> to run a shell script that installs the SSM agent.  </p>
+<p>At present, you cannot use custom AMIs with Managed Node Groups or modify the EC2 launch template for managed workers.  This presents a "chicken and egg problem", i.e. how can you use the SSM agent to remotely access these instances without using SSH to install the SSM agent first? As a temporary stop-gap you can run a privileged <a href="https://github.com/jicowan/ssm-agent-daemonset">DaemonSet</a> to run a shell script that installs the SSM agent.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
-<p>Since the DaemonSet is runs as a privileged pod, you should consider deleting it once the SSM agent is installed on your worker nodes. This workaround will no longer be necessary once Managed Node Groups adds support for custom AMIs and EC2 launch templates. </p>
+<p>Since the DaemonSet is runs as a privileged pod, you should consider deleting it once the SSM agent is installed on your worker nodes. This workaround will no longer be necessary once Managed Node Groups adds support for custom AMIs and EC2 launch templates.</p>
 </div>
 <h3 id="deploy-workers-onto-private-subnets">Deploy workers onto private subnets<a class="headerlink" href="#deploy-workers-onto-private-subnets" title="Permanent link">&para;</a></h3>
-<p>By deploying workers onto private subnets, you minimize their exposure to the Internet where attacks often originate.  Beginning April 22, 2020, the assignment of public IP addresses to nodes in a managed node groups will be controlled by the subnet they are deployed onto.  Prior to this, nodes in a Managed Node Group were automatically assigned a public IP. If you choose to deploy your worker nodes on to public subnets, implement restrictive AWS security group rules to limit their exposure. </p>
+<p>By deploying workers onto private subnets, you minimize their exposure to the Internet where attacks often originate.  Beginning April 22, 2020, the assignment of public IP addresses to nodes in a managed node groups will be controlled by the subnet they are deployed onto.  Prior to this, nodes in a Managed Node Group were automatically assigned a public IP. If you choose to deploy your worker nodes on to public subnets, implement restrictive AWS security group rules to limit their exposure.</p>
 <h3 id="run-amazon-inspector-to-assess-hosts-for-exposure-vulnerabilities-and-deviations-from-best-practices">Run Amazon Inspector to assess hosts for exposure, vulnerabilities, and deviations from best practices<a class="headerlink" href="#run-amazon-inspector-to-assess-hosts-for-exposure-vulnerabilities-and-deviations-from-best-practices" title="Permanent link">&para;</a></h3>
-<p><a href="https://docs.aws.amazon.com/inspector/latest/userguide/inspector_introduction.html">Inspector</a> requires the deployment of an agent that continually monitors activity on the instance while using a set of rules to assess alignment with best practices. </p>
+<p><a href="https://docs.aws.amazon.com/inspector/latest/userguide/inspector_introduction.html">Inspector</a> requires the deployment of an agent that continually monitors activity on the instance while using a set of rules to assess alignment with best practices.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>At present, managed node groups do not allow you to supply user metadata or your own AMI.  If you want to run Inspector on managed workers, you will need to install the agent after the node has been bootstrapped.</p>
+<p>At present, managed node groups do not allow you to supply user metadata or your own AMI.  If you want to run Inspector on managed workers, you will need to install the agent after the node has been bootstrapped.  The method described earlier for installing the SSM Agent onto managed nodes can be repurposed to install the Inspector agent. </p>
 </div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>Inspector cannot be run on the infrastructure used to run Fargate pods. </p>
+<p>Inspector cannot be run on the infrastructure used to run Fargate pods.</p>
 </div>
 <h2 id="alternatives">Alternatives<a class="headerlink" href="#alternatives" title="Permanent link">&para;</a></h2>
 <h3 id="run-selinux">Run SELinux<a class="headerlink" href="#run-selinux" title="Permanent link">&para;</a></h3>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>Available on RHEL and CoreOS instances</p>
+<p>Available on Red Hat Enterprise Linux (RHEL), CentOS, and CoreOS</p>
 </div>
-<p>SELinux provides an additional layer of security to keep containers isolated from each other and from the host. SELinux allows administrators to enforce mandatory access controls (MAC) for every user, application, process, and file.  Think of it as a backstop that restricts access to specific resources on the operation based on a set of labels.  On EKS it can be used to prevent containers from accessing each other's resources. </p>
-<p>SELinux has a module called <code>container_t</code> which general module used for running containers.  When you configure SELinux for Docker, Docker automatically labels workloads <code>container_t</code> as a type and gives each container a unique MCS level.  This alone will effectively isolate containers from each another.  If you need to give it more privileged access to a container, you can create your own profile in SElinux which grants it permissions to specific areas of the file system.  This is similiar to PSPs in that you can create different profiles for different containers/pods.  For example, you can have a profile for general workloads with a set of restrictive controls and another for things that require privileged access.</p>
-<p>You can assign SELinux labels using pods or container security context as in the following <code>podSec</code> excerpt: </p>
+<p>SELinux provides an additional layer of security to keep containers isolated from each other and from the host. SELinux allows administrators to enforce mandatory access controls (MAC) for every user, application, process, and file.  Think of it as a backstop that restricts the operations that can be performed against to specific resources based on a set of labels.  On EKS, SELinux can be used to prevent containers from accessing each other's resources.</p>
+<p>Container SELinux policies are defined in the <a href="https://github.com/containers/container-selinux">container-selinux</a> package.  Docker CE requires this package (along with its dependencies) so that the processes and files created by Docker (or other container runtimes) run with limited system access. Containers leverage the <code>container_t</code> label which is an alias to <code>svirt_lxc_net_t</code>. These policies effectively prevent containers from accessing certain features of the host.</p>
+<p>When you configure SELinux for Docker, Docker automatically labels workloads <code>container_t</code> as a type and gives each container a unique MCS level. This will isolate containers from one another. If you need looser restrictions, you can create your own profile in SElinux which grants a container permissions to specific areas of the file system.  This is similiar to PSPs in that you can create different profiles for different containers/pods.  For example, you can have a profile for general workloads with a set of restrictive controls and another for things that require privileged access.</p>
+<p>SELinux for Containers has a set of options that can be configured to modify the default restrictions. The following SELinux Booleans can be enabled or disabled based on your needs:</p>
+<table>
+<thead>
+<tr>
+<th>Boolean</th>
+<th align="center">Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>container_connect_any</code></td>
+<td align="center"><code>off</code></td>
+<td>Allow containers to access privileged ports on the host. For example, if you have a container that needs to map ports to 443 or 80 on the host.</td>
+</tr>
+<tr>
+<td><code>container_manage_cgroup</code></td>
+<td align="center"><code>off</code></td>
+<td>Allow containers to manage cgroup configuration. For example, a container running systemd will need this to be enabled.</td>
+</tr>
+<tr>
+<td><code>container_use_cephfs</code></td>
+<td align="center"><code>off</code></td>
+<td>Allow containers to use a ceph file system.</td>
+</tr>
+</tbody>
+</table>
+<p>By default, containers are allowed to read/execute under <code>/usr</code> and read most content from <code>/etc</code>. The files under <code>/var/lib/docker</code> and <code>/var/lib/containers</code> have the label <code>container_var_lib_t</code>. To view a full list of default, labels see the <a href="https://github.com/containers/container-selinux/blob/master/container.fc">container.fc</a> file.</p>
+<div class="codehilite"><pre><span></span><code>docker container run -it <span class="se">\</span>
+  -v /var/lib/docker/image/overlay2/repositories.json:/host/repositories.json <span class="se">\</span>
+  centos:7 cat /host/repositories.json
+<span class="c1"># cat: /host/repositories.json: Permission denied</span>
+
+docker container run -it <span class="se">\</span>
+  -v /etc/passwd:/host/etc/passwd <span class="se">\</span>
+  centos:7 cat /host/etc/passwd
+<span class="c1"># cat: /host/etc/passwd: Permission denied</span>
+</code></pre></div>
+
+
+<p>Files labeled with <code>container_file_t</code> are the only files that are writable by containers. If you want a volume mount to be writeable, you will needed to specify <code>:z</code> or <code>:Z</code> at the end.</p>
+<ul>
+<li><code>:z</code> will re-label the files so that the container can read/write</li>
+<li><code>:Z</code> will re-label the files so that <strong>only</strong> the container can read/write</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>ls -Z /var/lib/misc
+<span class="c1"># -rw-r--r--. root root system_u:object_r:var_lib_t:s0   postfix.aliasesdb-stamp</span>
+
+docker container run -it <span class="se">\</span>
+  -v /var/lib/misc:/host/var/lib/misc:z <span class="se">\</span>
+  centos:7 <span class="nb">echo</span> <span class="s2">&quot;Relabeled!&quot;</span>
+
+ls -Z /var/lib/misc
+<span class="c1">#-rw-r--r--. root root system_u:object_r:container_file_t:s0 postfix.aliasesdb-stamp</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code>docker container run -it <span class="se">\</span>
+  -v /var/log:/host/var/log:Z <span class="se">\</span>
+  fluentbit:latest
+</code></pre></div>
+
+
+<p>In Kubernetes, relabeling is slightly different. Rather than having Docker automatically relabel the files, you can specify a custom MCS label to run the pod. Volumes that support relabeling will automatically be relabeled so that they are accessible. Pods with a matching MCS label will be able to access the volume. If you need strict isolation, set a different MCS label for each pod.</p>
 <div class="codehilite"><pre><span></span><code><span class="nt">securityContext</span><span class="p">:</span>
   <span class="nt">seLinuxOptions</span><span class="p">:</span>
     <span class="c1"># Provide a unique MCS label per container</span>
@@ -635,16 +699,17 @@
 </code></pre></div>
 
 
-<p>In this example <code>s0:c144:c154</code> corresponds to an MCS label assigned to a file that the container is allowed to access. </p>
-<p>On EKS you could create policies that allow for privileged containers to run, like FluentD and create an SELinux policy to allow it to read from /var/log on the host. </p>
+<p>In this example <code>s0:c144:c154</code> corresponds to an MCS label assigned to a file that the container is allowed to access.</p>
+<p>On EKS you could create policies that allow for privileged containers to run, like FluentD and create an SELinux policy to allow it to read from /var/log on the host without needing to relabel the host directory. Pods with the same label will be able to access the same host volumes.</p>
+<p>We have implemented <a href="https://github.com/aws-samples/amazon-eks-custom-amis">sample AMIs for Amazon EKS</a> that have SELinux configured on CentOS 7 and RHEL 7. These AMIs were developed to demonstrate sample implementations that meet requirements of highly regulated customers, such as STIG, CJIS, and C2S.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
-<p>SELinux will ignore containers where the type is unconfined. </p>
+<p>SELinux will ignore containers where the type is unconfined.</p>
 </div>
 <h4 id="additional-resources">Additional resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h4>
 <ul>
 <li><a href="https://platform9.com/blog/selinux-kubernetes-rbac-and-shipping-security-policies-for-on-prem-applications/">SELinux Kubernetes RBAC and Shipping Security Policies for On-prem Applications</a></li>
-<li><a href="https://jayunit100.blogspot.com/2019/07/iterative-hardening-of-kubernetes-and.html">Iterative Hardening of Kubernetes</a> </li>
+<li><a href="https://jayunit100.blogspot.com/2019/07/iterative-hardening-of-kubernetes-and.html">Iterative Hardening of Kubernetes</a></li>
 <li><a href="https://linux.die.net/man/1/audit2allow">Audit2Allow</a></li>
 <li><a href="https://linux.die.net/man/8/sealert">SEAlert</a></li>
 <li><a href="https://www.redhat.com/en/blog/generate-selinux-policies-containers-with-udica">Generate SELinux policies for containers with Udica</a> describes a tool that looks at container spec files for Linux capabilities, ports, and mount points, and generates a set of SELinux rules that allow the container to run properly</li>
