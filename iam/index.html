@@ -348,6 +348,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#increase-the-hop-limit-on-ec2-instances-to-2-if-you-use-the-iam-metadata-service-v2-imdsv2" class="md-nav__link">
+    Increase the hop limit on EC2 instances to 2 if you use the IAM Metadata Service v2 (IMDSv2)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#run-the-application-as-a-non-root-user" class="md-nav__link">
     Run the application as a non-root user
   </a>
@@ -658,6 +665,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#increase-the-hop-limit-on-ec2-instances-to-2-if-you-use-the-iam-metadata-service-v2-imdsv2" class="md-nav__link">
+    Increase the hop limit on EC2 instances to 2 if you use the IAM Metadata Service v2 (IMDSv2)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#run-the-application-as-a-non-root-user" class="md-nav__link">
     Run the application as a non-root user
   </a>
@@ -880,6 +894,8 @@
 </div>
 <h3 id="restrict-access-to-the-instance-profile-assigned-to-the-worker-node">Restrict access to the instance profile assigned to the worker node<a class="headerlink" href="#restrict-access-to-the-instance-profile-assigned-to-the-worker-node" title="Permanent link">&para;</a></h3>
 <p>When you use IRSA, the Pod no longer inherits the rights of the instance profile assigned to the worker node. Nonetheless, as an added precaution, you may want to block a process's ability to access <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html">instance metadata</a>. This will effectively prevent pods that do not use IRSA from inheriting the role assigned to the worker node. Be aware that when you block access to instance metadata on a worker node, it may prevent certain pods from functioning properly. For additional information about how to block access to instance metadata, see https://docs.aws.amazon.com/eks/latest/userguide/restrict-ec2-credential-access.html.</p>
+<h3 id="increase-the-hop-limit-on-ec2-instances-to-2-if-you-use-the-iam-metadata-service-v2-imdsv2">Increase the hop limit on EC2 instances to 2 if you use the IAM Metadata Service v2 (IMDSv2)<a class="headerlink" href="#increase-the-hop-limit-on-ec2-instances-to-2-if-you-use-the-iam-metadata-service-v2-imdsv2" title="Permanent link">&para;</a></h3>
+<p><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html">IMDSv2</a> requires you use a PUT request to get a session token.  The initial PUT request has to include a TTL for the session token.  Newer versions of the AWS SDKs will handle this and the renewal of said token automatically. It's also important to be aware that the default hop limit on EC2 instances is intentionally set to 1 to prevent IP forwarding. As a consequence, Pods that request a session token that are run on EC2 instances may eventually time out and fallback to using the IMDSv1 data flow. EKS adds support IMDSv2 by <em>enabling</em> both v1 and v2 and changing the hop limit to 2 on nodes provisioned by eksctl or with the official CloudFormation templates. </p>
 <h3 id="run-the-application-as-a-non-root-user">Run the application as a non-root user<a class="headerlink" href="#run-the-application-as-a-non-root-user" title="Permanent link">&para;</a></h3>
 <p>Containers run as root by default. While this allows them to read the web identity token file, running a container as root is not considered a best practice. As an alternative, consider adding the <code>spec.securityContext.runAsUser</code> attribute to the PodSpec.  The value of <code>runAsUser</code> is abritrary value.</p>
 <p>In the following example, all processes within the Pod will run under the user ID specified in the <code>runAsUser</code> field. </p>
