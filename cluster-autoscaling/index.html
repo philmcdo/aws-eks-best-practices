@@ -608,6 +608,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    Additional Resources
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#references" class="md-nav__link">
     References
   </a>
@@ -809,6 +816,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    Additional Resources
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#references" class="md-nav__link">
     References
   </a>
@@ -876,26 +890,26 @@
 <p>The primary knobs for tuning scalability of the Cluster Autoscaler are the resources provided to the process, the scan interval of the algorithm, and the number of Node Groups in the cluster. There are other factors involved in the true runtime complexity of this algorithm, such as scheduling plugin complexity and number of pods. These are considered to be unconfigurable parameters as they are natural to the cluster’s workload and cannot easily be tuned.</p>
 <p>The Cluster Autoscaler loads the entire cluster’s state into memory, including Pods, Nodes, and Node Groups. On each scan interval, the algorithm identifies unschedulable pods and simulates scheduling for each Node Group. Tuning these factors come with different tradeoffs which should be carefully considered for your use case.</p>
 <h3 id="vertically-autoscaling-the-cluster-autoscaler">Vertically Autoscaling the Cluster Autoscaler<a class="headerlink" href="#vertically-autoscaling-the-cluster-autoscaler" title="Permanent link">&para;</a></h3>
-<p>The simplest way to scale the Cluster Autoscaler to larger clusters is to increase the resource requests for its deployment. Both memory and CPU should be increased for large clusters, though this varies significantly cluster size. The autoscaling algorithm stores all pods and nodes in memory, which can result in a memory footprint larger than a gigabyte in some cases. Increasing resources is typically done manually. If you find that constant resource tuning is creating an operational burden, consider using the <a href="https://github.com/kubernetes/autoscaler/tree/master/addon-resizer">Addon Resizer</a> or <a href="https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler">Vertical Pod Autoscaler</a>.</p>
+<p>The simplest way to scale the Cluster Autoscaler to larger clusters is to increase the resource requests for its deployment. Both memory and CPU should be increased for large clusters, though this varies significantly with cluster size. The autoscaling algorithm stores all pods and nodes in memory, which can result in a memory footprint larger than a gigabyte in some cases. Increasing resources is typically done manually. If you find that constant resource tuning is creating an operational burden, consider using the <a href="https://github.com/kubernetes/autoscaler/tree/master/addon-resizer">Addon Resizer</a> or <a href="https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler">Vertical Pod Autoscaler</a>.</p>
 <h3 id="reducing-the-number-of-node-groups">Reducing the number of Node Groups<a class="headerlink" href="#reducing-the-number-of-node-groups" title="Permanent link">&para;</a></h3>
 <p>Minimizing the number of node groups is one way to ensure that the Cluster Autoscaler will continue to perform well on large clusters. This may be challenging for some organizations who structure their node groups per team or per application. While this is fully supported by the Kubernetes API, this is considered to be a Cluster Autoscaler anti-pattern with repercussions for scalability. There are many reasons to use multiple node groups (e.g. Spot or GPUs), but in many cases there are alternative designs that achieve the same effect while using a small number of groups.</p>
 <p>Ensure that:</p>
 <ul>
-<li>Isolate pods using Namespaces rather than Node Groups.<ul>
+<li>Pod isolation is done using Namespaces rather than Node Groups.<ul>
 <li>This may not be possible in low-trust multi-tenant clusters.</li>
 <li>Pod ResourceRequests and ResourceLimits are properly set to avoid resource contention.</li>
 <li>Larger instance types will result in more optimal bin packing and reduced system pod overhead.</li>
 </ul>
 </li>
-<li>NodeTaints or NodeSelectors should be used to schedule pods as the exception, not as the rule.</li>
+<li>NodeTaints or NodeSelectors are used to schedule pods as the exception, not as the rule.</li>
 <li>Regional resources are defined as a single EC2 Auto Scaling Group with multiple Availability Zones.</li>
 </ul>
 <h3 id="reducing-the-scan-interval">Reducing the Scan Interval<a class="headerlink" href="#reducing-the-scan-interval" title="Permanent link">&para;</a></h3>
 <p>A low scan interval (e.g. 10 seconds) will ensure that the Cluster Autoscaler responds as quickly as possible when pods become unschedulable. However, each scan results in many API calls to the Kubernetes API and EC2 Auto Scaling Group or EKS Managed Node Group APIs. These API calls can result in rate limiting or even service unavailability for your Kubernetes Control Plane.</p>
-<p>The default scan interval is 10 seconds, but on AWS, launching a node is on the order of minutes to launch a new instance. This means that it’s possible to increase the interval without significantly increasing overall scale up time. For example, if it takes 2 minutes to launch a node, changing the interval to 1 minute will result a tradeoff of 6x reduced API calls for 38% slower scale ups.</p>
+<p>The default scan interval is 10 seconds, but on AWS, launching a node takes significantly longer to launch a new instance. This means that it’s possible to increase the interval without significantly increasing overall scale up time. For example, if it takes 2 minutes to launch a node, changing the interval to 1 minute will result a tradeoff of 6x reduced API calls for 38% slower scale ups.</p>
 <h3 id="sharding-across-node-groups">Sharding Across Node Groups<a class="headerlink" href="#sharding-across-node-groups" title="Permanent link">&para;</a></h3>
 <p>The Cluster Autoscaler can be configured to operate on a specific set of Node Groups. Using this functionality, it’s possible to deploy multiple instances of the Cluster Autoscaler, each configured to operate on a different set of Node Groups. This strategy enables you use arbitrarily large numbers of Node Groups, trading cost for scalability. We only recommend using this as a last resort for improving performance.</p>
-<p>The Cluster Autoscaler was not originally designed for this configuration, so there are some side effects. Since the shards do not communicate, it’s possible for multiple autoscalers to attempt to schedule an unschedulable pod. This can result in unnecessary scale out of multiple Node Groups. These extra nodes will scale back in after the scale-down-delay.</p>
+<p>The Cluster Autoscaler was not originally designed for this configuration, so there are some side effects. Since the shards do not communicate, it’s possible for multiple autoscalers to attempt to schedule an unschedulable pod. This can result in unnecessary scale out of multiple Node Groups. These extra nodes will scale back in after the <code>scale-down-delay</code>.</p>
 <div class="codehilite"><pre><span></span><code><span class="n">metadata</span><span class="o">:</span>
   <span class="n">name</span><span class="o">:</span> <span class="n">cluster</span><span class="o">-</span><span class="n">autoscaler</span>
   <span class="kd">namespace</span><span class="o">:</span> <span class="n">cluster</span><span class="o">-</span><span class="n">autoscaler</span><span class="o">-</span><span class="mi">1</span>
@@ -926,10 +940,10 @@
 <h2 id="optimizing-for-cost-and-availability">Optimizing for Cost and Availability<a class="headerlink" href="#optimizing-for-cost-and-availability" title="Permanent link">&para;</a></h2>
 <h3 id="spot-instances">Spot Instances<a class="headerlink" href="#spot-instances" title="Permanent link">&para;</a></h3>
 <p>Spot Instances can significantly reduce your infrastructure costs, but capacity is limited and can be taken away at any time. Insufficient Capacity Errors will occur when your EC2 Auto Scaling Group cannot scale up due to lack of available capacity. Maximizing diversity by selecting many instance families can help combat availability limitations and interruptions. Mixed Instance Policies with Spot Instances are a great way to increase diversity without increasing the number of node groups. Keep in mind, if you need guaranteed resources, use On-Demand Instances instead of Spot Instances.</p>
-<p>It’s critical that all Instance Types have similar resource capacity when configuring Mixed Instance Policies. The autoscaler’s scheduling simulator uses the first Instance Type in the MixedInstancePolicy. If subsequent Instance Types are larger, resources may be wasted after a scale up. If smaller, your pods may fail to schedule on the new instances due to insufficient capacity. For example, M4, M5, M5a, and M5n instances all have similar amounts of CPU and Memory and are great candidates for a MixedInstancePolicy. The <a href="https://github.com/aws/amazon-ec2-instance-selector">EC2 Instance Selector</a> tool can help you identify similar instance types.</p>
+<p>It’s critical that all Instance Types have similar resource capacity when configuring Mixed Instance Policies. The autoscaler’s scheduling simulator uses the first InstanceType in the MixedInstancePolicy. If subsequent Instance Types are larger, resources may be wasted after a scale up. If smaller, your pods may fail to schedule on the new instances due to insufficient capacity. For example, M4, M5, M5a, and M5n instances all have similar amounts of CPU and Memory and are great candidates for a MixedInstancePolicy. The <a href="https://github.com/aws/amazon-ec2-instance-selector">EC2 Instance Selector</a> tool can help you identify similar instance types.</p>
 <p><img alt="" src="../spot_mix_instance_policy.jpg" /></p>
 <p>It's recommended to isolate On-Demand and Spot capacity into separate EC2 Auto Scaling Groups. This is preferred over using a <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-purchase-options.html#asg-instances-distribution">base capacity strategy</a> because the scheduling properties are fundamentally different. Since Spot capacity can be preempted at any time, users will often taint their preemptable nodes, requiring an explicit pod toleration to the preemption behavior. These taints result in different scheduling properties for the nodes, so they should be separated into multiple EC2 Auto Scaling Groups.</p>
-<p>You may also configure priority based autoscaling. The Cluster Autoscaler has a concept of <a href="https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders">Expanders</a>, which provide different strategies for selecting which Node Group to scale. However, only one expander strategy can be configured at a time. The strategy --expander=least-waste is a good general purpose default, but may not be the best option when heavily using Spot Instances. The strategy <code>--expander=priority</code> enables your cluster to prioritize a Spot EC2 Auto Scaling Group and fall back to On-Demand EC2 Auto Scaling Group when the former runs out of capacity. For example:</p>
+<p>You may also configure priority based autoscaling. The Cluster Autoscaler has a concept of <a href="https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders">Expanders</a>, which provide different strategies for selecting which Node Group to scale. However, only one expander strategy can be configured at a time. The strategy <code>--expander=least-waste</code> is a good general purpose default, but may not be the best option when heavily using Spot Instances. The strategy <code>--expander=priority</code> enables your cluster to prioritize a Spot EC2 Auto Scaling Group and fall back to On-Demand EC2 Auto Scaling Group when the former runs out of capacity. For example:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">apiVersion</span><span class="o">:</span> <span class="n">v1</span>
 <span class="n">kind</span><span class="o">:</span> <span class="n">ConfigMap</span>
 <span class="n">metadata</span><span class="o">:</span>
@@ -952,10 +966,10 @@ This value defaults to 15 minutes and can be reduced for more responsive fallbac
 <p>There are other less obvious benefits to overprovisioning. Without overprovisioning, one of the side effects of a highly utilized cluster is that pods will make less optimal scheduling decisions using the <code>preferredDuringSchedulingIgnoredDuringExecution</code> rule of Pod or Node Affinity. A common use case for this is to separate pods for a highly available application across availability zones using AntiAffinity. Overprovisioning can significantly increase the chance that a node of the correct zone is available.</p>
 <p>The amount of overprovisioned capacity is a careful business decision for your organization. At its core, it’s a tradeoff between performance and cost. One way to make this decision is to determine your average scale up frequency and divide it by the amount of time it takes to scale up a new node. For example, if on average you require a new node every 30 seconds and EC2 takes 30 seconds to provision a new node, a single node of overprovisioning will ensure that there’s always an extra node available, reducing scheduling latency by 30 seconds at the cost of a single additional EC2 Instance. To improve zonal scheduling decisions, overprovision a number of nodes equal to the number of availability zones in your EC2 Auto Scaling Group to ensure that the scheduler can select the best zone for incoming pods.</p>
 <h3 id="prevent-scale-down-eviction">Prevent Scale Down Eviction<a class="headerlink" href="#prevent-scale-down-eviction" title="Permanent link">&para;</a></h3>
-<p>Some workloads are expensive to evict. Unlike application serving, big data analysis, machine learning tasks, and test runners will eventually complete, but must be restarted if interrupted. The Cluster Autoscaler will attempt to scale down any node under the scale-down-utilization-threshold, which will interrupt any remaining pods on the node. This can be prevented by ensuring that pods that are expensive to evict are protected by a label recognized by the Cluster Autoscaler.</p>
+<p>Some workloads are expensive to evict. Big data analysis, machine learning tasks, and test runners will eventually complete, but must be restarted if interrupted. The Cluster Autoscaler will attempt to scale down any node under the scale-down-utilization-threshold, which will interrupt any remaining pods on the node. This can be prevented by ensuring that pods that are expensive to evict are protected by a label recognized by the Cluster Autoscaler.</p>
 <p>Ensure that:</p>
 <ul>
-<li>Protected workloads are be labeled with <code>cluster-autoscaler.kubernetes.io/safe-to-evict=false</code></li>
+<li>Expensive to evict pods have the label <code>cluster-autoscaler.kubernetes.io/safe-to-evict=false</code></li>
 </ul>
 <h2 id="advanced-use-cases">Advanced Use Cases<a class="headerlink" href="#advanced-use-cases" title="Permanent link">&para;</a></h2>
 <h3 id="ebs-volumes">EBS Volumes<a class="headerlink" href="#ebs-volumes" title="Permanent link">&para;</a></h3>
@@ -966,7 +980,7 @@ This value defaults to 15 minutes and can be reduced for more responsive fallbac
 <li>Node Groups are configured with identical settings except for different availability zones and EBS Volumes.</li>
 </ul>
 <h3 id="co-scheduling">Co-Scheduling<a class="headerlink" href="#co-scheduling" title="Permanent link">&para;</a></h3>
-<p>Machine learning distributed training jobs benefit significantly from the minimized latency of same-zone node configurations. These workloads deploy multiple pods to a specific zone. This can be achieved by setting Pod Affinity for all co-scheduled pods or Node Affinity using <code>topologyKey: failure-domain.beta.kubernetes.io/zone</code>. The Cluster Autoscaler will then scale out a specific zone to match demands. You may wish to allocate multiple EC2 Auto Scaling Groups, one per availability zone to enable failover for the entire co-scheduled workload..</p>
+<p>Machine learning distributed training jobs benefit significantly from the minimized latency of same-zone node configurations. These workloads deploy multiple pods to a specific zone. This can be achieved by setting Pod Affinity for all co-scheduled pods or Node Affinity using <code>topologyKey: failure-domain.beta.kubernetes.io/zone</code>. The Cluster Autoscaler will then scale out a specific zone to match demands. You may wish to allocate multiple EC2 Auto Scaling Groups, one per availability zone to enable failover for the entire co-scheduled workload.</p>
 <p>Ensure that:</p>
 <ul>
 <li>Node group balancing is enabled by setting <code>balance-similar-node-groups=false</code></li>
@@ -987,7 +1001,7 @@ This value defaults to 15 minutes and can be reduced for more responsive fallbac
 <li>Nodes with Accelerators adhere to the identical scheduling properties rule noted above.</li>
 </ul>
 <h3 id="scaling-from-0">Scaling from 0<a class="headerlink" href="#scaling-from-0" title="Permanent link">&para;</a></h3>
-<p>Cluster Autoscaler is capable of scaling Node Groups to and from zero, which can yield significant cost savings. It detects the CPU, memory, and GPU resources of an Auto Scaling Group by inspecting the instance type specified in its Launch Configuration or Launch Template. Some pods require additional resources like <code>WindowsENI</code> or <code>PrivateIPv4Address</code> or specific NodeSelectors or Taints which cannot be discovered from the Launch Configuration. The Cluster Autoscaler can account for these factors by discovering them from tags on the EC2 Auto Scaling Group. For example:</p>
+<p>Cluster Autoscaler is capable of scaling Node Groups to and from zero, which can yield significant cost savings. It detects the CPU, memory, and GPU resources of an Auto Scaling Group by inspecting the InstanceType specified in its LaunchConfiguration or LaunchTemplate. Some pods require additional resources like <code>WindowsENI</code> or <code>PrivateIPv4Address</code> or specific NodeSelectors or Taints which cannot be discovered from the LaunchConfiguration. The Cluster Autoscaler can account for these factors by discovering them from tags on the EC2 Auto Scaling Group. For example:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">Key</span><span class="o">:</span> <span class="n">k8s</span><span class="o">.</span><span class="na">io</span><span class="sr">/cluster-autoscaler/node-template/resources/</span><span class="n">$RESOURCE_NAME</span>
 <span class="n">Value</span><span class="o">:</span> <span class="mi">5</span>
 <span class="n">Key</span><span class="o">:</span> <span class="n">k8s</span><span class="o">.</span><span class="na">io</span><span class="sr">/cluster-autoscaler/node-template/label/</span><span class="n">$LABEL_KEY</span>
@@ -1069,6 +1083,22 @@ A complete list of parameters is available on <a href="https://github.com/kubern
 <td>scale-down-candidates-pool-min-count</td>
 <td>Minimum number of nodes that are considered as additional non empty candidates for scale down when some candidates from previous iteration are no longer valid. When calculating the pool size for additional candidates we take <code>max(#nodes * scale-down-candidates-pool-ratio, scale-down-candidates-pool-min-count)</code></td>
 <td>50</td>
+</tr>
+</tbody>
+</table>
+<h2 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h2>
+<p>This page contains a list of Cluster Autoscaler presentations and demos. If you'd like to add a presentation or demo here, please send a pull request.</p>
+<table>
+<thead>
+<tr>
+<th>Presentation/Demo</th>
+<th>Presenters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://sched.co/Zemi">Autoscaling and Cost Optimization on Kubernetes: From 0 to 100</a></td>
+<td>Guy Templeton, Skyscanner &amp; Jiaxin Shan, Amazon</td>
 </tr>
 </tbody>
 </table>
