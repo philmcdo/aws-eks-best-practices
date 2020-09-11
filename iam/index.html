@@ -393,6 +393,34 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#update-the-aws-node-daemonset-to-use-irsa" class="md-nav__link">
+    Update the aws-node daemonset to use IRSA
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restrict-access-to-the-instance-profile-assigned-to-the-worker-node" class="md-nav__link">
+    Restrict access to the instance profile assigned to the worker node
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scope-the-iam-role-trust-policy-for-irsa-to-the-service-account-name" class="md-nav__link">
+    Scope the IAM Role trust policy for IRSA to the service account name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-your-application-needs-access-to-idms-use-imdsv2-and-increase-the-hop-limit-on-ec2-instances-to-2" class="md-nav__link">
+    When your application needs access to IDMS, use IMDSv2 and increase the hop limit on EC2 instances to 2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#disable-auto-mounting-of-service-account-tokens" class="md-nav__link">
     Disable auto-mounting of service account tokens
   </a>
@@ -407,36 +435,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#restrict-access-to-the-instance-profile-assigned-to-the-worker-node" class="md-nav__link">
-    Restrict access to the instance profile assigned to the worker node
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#update-the-aws-node-daemonset-to-use-irsa" class="md-nav__link">
-    Update the aws-node daemonset to use IRSA
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#increase-the-hop-limit-on-ec2-instances-to-2-if-you-use-the-iam-metadata-service-v2-imdsv2" class="md-nav__link">
-    Increase the hop limit on EC2 instances to 2 if you use the IAM Metadata Service v2 (IMDSv2)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#run-the-application-as-a-non-root-user" class="md-nav__link">
     Run the application as a non-root user
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#scope-the-iam-role-trust-policy-for-irsa-to-the-service-account-name" class="md-nav__link">
-    Scope the IAM Role trust policy for IRSA to the service account name
   </a>
   
 </li>
@@ -764,6 +764,34 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#update-the-aws-node-daemonset-to-use-irsa" class="md-nav__link">
+    Update the aws-node daemonset to use IRSA
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restrict-access-to-the-instance-profile-assigned-to-the-worker-node" class="md-nav__link">
+    Restrict access to the instance profile assigned to the worker node
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scope-the-iam-role-trust-policy-for-irsa-to-the-service-account-name" class="md-nav__link">
+    Scope the IAM Role trust policy for IRSA to the service account name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-your-application-needs-access-to-idms-use-imdsv2-and-increase-the-hop-limit-on-ec2-instances-to-2" class="md-nav__link">
+    When your application needs access to IDMS, use IMDSv2 and increase the hop limit on EC2 instances to 2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#disable-auto-mounting-of-service-account-tokens" class="md-nav__link">
     Disable auto-mounting of service account tokens
   </a>
@@ -778,36 +806,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#restrict-access-to-the-instance-profile-assigned-to-the-worker-node" class="md-nav__link">
-    Restrict access to the instance profile assigned to the worker node
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#update-the-aws-node-daemonset-to-use-irsa" class="md-nav__link">
-    Update the aws-node daemonset to use IRSA
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#increase-the-hop-limit-on-ec2-instances-to-2-if-you-use-the-iam-metadata-service-v2-imdsv2" class="md-nav__link">
-    Increase the hop limit on EC2 instances to 2 if you use the IAM Metadata Service v2 (IMDSv2)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#run-the-application-as-a-non-root-user" class="md-nav__link">
     Run the application as a non-root user
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#scope-the-iam-role-trust-policy-for-irsa-to-the-service-account-name" class="md-nav__link">
-    Scope the IAM Role trust policy for IRSA to the service account name
   </a>
   
 </li>
@@ -1007,18 +1007,8 @@
 
 <p>The kubelet will automatically rotate the projected token when it is older than 80% of its total TTL, or after 24 hours. The AWS SDKs are responsible for reloading the token when it rotates. For further information about IRSA, see https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html.</p>
 <h2 id="recommendations_1">Recommendations<a class="headerlink" href="#recommendations_1" title="Permanent link">&para;</a></h2>
-<h3 id="disable-auto-mounting-of-service-account-tokens">Disable auto-mounting of service account tokens<a class="headerlink" href="#disable-auto-mounting-of-service-account-tokens" title="Permanent link">&para;</a></h3>
-<p>If your application doesn't need to call the Kubernetes API set the <code>automountServiceAccountToken</code> attribute to <code>false</code> in the PodSpec for your application or patch the default service account in each namespace so that it's no longer mounted to pods automatically. For example: </p>
-<div class="codehilite"><pre><span></span><code>kubectl patch serviceaccount default -p <span class="s1">$&#39;automountServiceAccountToken: false&#39;</span>
-</code></pre></div>
-
-
-<h3 id="use-dedicated-service-accounts-for-each-application">Use dedicated service accounts for each application<a class="headerlink" href="#use-dedicated-service-accounts-for-each-application" title="Permanent link">&para;</a></h3>
-<p>Each application should have its own dedicated service account.  This applies to service accounts for the Kubernetes API as well as IRSA. </p>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>If you employ a blue/green approach to cluster upgrades instead of performing an in-place cluster upgrade, you will need to update the trust policy of each of the IRSA IAM roles with the OIDC endpoint of the new cluster. A blue/green cluster upgrade is where you create a cluster running a newer version of Kubernetes alongside the old cluster and use a load balancer or a service mesh to seamlessly shift traffic from services running on the old cluster to the new cluster. </p>
-</div>
+<h3 id="update-the-aws-node-daemonset-to-use-irsa">Update the aws-node daemonset to use IRSA<a class="headerlink" href="#update-the-aws-node-daemonset-to-use-irsa" title="Permanent link">&para;</a></h3>
+<p>At present, the aws-node daemonset is configured to use a role assigned to the EC2 instances to assign IPs to pods.  This role includes several AWS managed policies, e.g. AmazonEKS_CNI_Policy and EC2ContainerRegistryReadOnly that effectly allow <strong>all</strong> pods running on a node to attach/detach ENIs, assign/unassign IP addresses, or pull images from ECR. Since this presents a risk to your cluster, it is recommended that you update the aws-node daemonset to use IRSA. A script for doing this can be found in the <a href="https://github.com/aws/aws-eks-best-practices/tree/master/projects/enable-irsa/src">repository</a> for this guide.</p>
 <h3 id="restrict-access-to-the-instance-profile-assigned-to-the-worker-node">Restrict access to the instance profile assigned to the worker node<a class="headerlink" href="#restrict-access-to-the-instance-profile-assigned-to-the-worker-node" title="Permanent link">&para;</a></h3>
 <p>When you use IRSA, it updates the credential chain of the pod to use the IRSA token, however, the pod <em>can still inherit the rights of the instance profile assigned to the worker node</em>. When using IRSA, it is <strong>strongly</strong> recommended that you block access <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html">instance metadata</a> to minimize the blast radius of a breach. </p>
 <div class="admonition caution">
@@ -1031,10 +1021,22 @@
 
 
 <p>You can also block a pod's access to EC2 metadata by manipulating iptables on the node. For further information about this method, see https://docs.aws.amazon.com/eks/latest/userguide/restrict-ec2-credential-access.html.</p>
-<h3 id="update-the-aws-node-daemonset-to-use-irsa">Update the aws-node daemonset to use IRSA<a class="headerlink" href="#update-the-aws-node-daemonset-to-use-irsa" title="Permanent link">&para;</a></h3>
-<p>At present, the aws-node daemonset is configured to use a role assigned to the EC2 instances to assign IPs to pods.  This role includes several AWS managed policies, e.g. AmazonEKS_CNI_Policy and EC2ContainerRegistryReadOnly that effectly allow <strong>all</strong> pods running on a node to attach/detach ENIs, assign/unassign IP addresses, or pull images from ECR. Since this presents a risk to your cluster, it is recommended that you update the aws-node daemonset to use IRSA. A script for doing this can be found in the <a href="https://github.com/aws/aws-eks-best-practices/tree/master/projects/enable-irsa/src">repository</a> for this guide.</p>
-<h3 id="increase-the-hop-limit-on-ec2-instances-to-2-if-you-use-the-iam-metadata-service-v2-imdsv2">Increase the hop limit on EC2 instances to 2 if you use the IAM Metadata Service v2 (IMDSv2)<a class="headerlink" href="#increase-the-hop-limit-on-ec2-instances-to-2-if-you-use-the-iam-metadata-service-v2-imdsv2" title="Permanent link">&para;</a></h3>
+<h3 id="scope-the-iam-role-trust-policy-for-irsa-to-the-service-account-name">Scope the IAM Role trust policy for IRSA to the service account name<a class="headerlink" href="#scope-the-iam-role-trust-policy-for-irsa-to-the-service-account-name" title="Permanent link">&para;</a></h3>
+<p>The trust policy can be scoped to a Namespace or a specific service account within a Namespace. When using IRSA it's best to make the role trust policy as explicit as possible by including the service account name. This will effectively prevent other Pods within the same Namespace from assuming the role. The CLI <code>eksctl</code> will do this automatically when you use it to create service accounts/IAM roles. See https://eksctl.io/usage/iamserviceaccounts/ for further information. </p>
+<h3 id="when-your-application-needs-access-to-idms-use-imdsv2-and-increase-the-hop-limit-on-ec2-instances-to-2">When your application needs access to IDMS, use IMDSv2 and increase the hop limit on EC2 instances to 2<a class="headerlink" href="#when-your-application-needs-access-to-idms-use-imdsv2-and-increase-the-hop-limit-on-ec2-instances-to-2" title="Permanent link">&para;</a></h3>
 <p><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html">IMDSv2</a> requires you use a PUT request to get a session token.  The initial PUT request has to include a TTL for the session token.  Newer versions of the AWS SDKs will handle this and the renewal of said token automatically. It's also important to be aware that the default hop limit on EC2 instances is intentionally set to 1 to prevent IP forwarding. As a consequence, Pods that request a session token that are run on EC2 instances may eventually time out and fallback to using the IMDSv1 data flow. EKS adds support IMDSv2 by <em>enabling</em> both v1 and v2 and changing the hop limit to 2 on nodes provisioned by eksctl or with the official CloudFormation templates. </p>
+<h3 id="disable-auto-mounting-of-service-account-tokens">Disable auto-mounting of service account tokens<a class="headerlink" href="#disable-auto-mounting-of-service-account-tokens" title="Permanent link">&para;</a></h3>
+<p>If your application doesn't need to call the Kubernetes API set the <code>automountServiceAccountToken</code> attribute to <code>false</code> in the PodSpec for your application or patch the default service account in each namespace so that it's no longer mounted to pods automatically. For example: </p>
+<div class="codehilite"><pre><span></span><code>kubectl patch serviceaccount default -p <span class="s1">$&#39;automountServiceAccountToken: false&#39;</span>
+</code></pre></div>
+
+
+<h3 id="use-dedicated-service-accounts-for-each-application">Use dedicated service accounts for each application<a class="headerlink" href="#use-dedicated-service-accounts-for-each-application" title="Permanent link">&para;</a></h3>
+<p>Each application should have its own dedicated service account.  This applies to service accounts for the Kubernetes API as well as IRSA. </p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>If you employ a blue/green approach to cluster upgrades instead of performing an in-place cluster upgrade, you will need to update the trust policy of each of the IRSA IAM roles with the OIDC endpoint of the new cluster. A blue/green cluster upgrade is where you create a cluster running a newer version of Kubernetes alongside the old cluster and use a load balancer or a service mesh to seamlessly shift traffic from services running on the old cluster to the new cluster. </p>
+</div>
 <h3 id="run-the-application-as-a-non-root-user">Run the application as a non-root user<a class="headerlink" href="#run-the-application-as-a-non-root-user" title="Permanent link">&para;</a></h3>
 <p>Containers run as root by default. While this allows them to read the web identity token file, running a container as root is not considered a best practice. As an alternative, consider adding the <code>spec.securityContext.runAsUser</code> attribute to the PodSpec.  The value of <code>runAsUser</code> is abritrary value.</p>
 <p>In the following example, all processes within the Pod will run under the user ID specified in the <code>runAsUser</code> field. </p>
@@ -1061,8 +1063,6 @@
 
 
 <p>This is supposed to get fixed in an future release of k8s, <a href="https://github.com/kubernetes/enhancements/pull/1598">kubernetes/enhancements#1598</a>.</p>
-<h3 id="scope-the-iam-role-trust-policy-for-irsa-to-the-service-account-name">Scope the IAM Role trust policy for IRSA to the service account name<a class="headerlink" href="#scope-the-iam-role-trust-policy-for-irsa-to-the-service-account-name" title="Permanent link">&para;</a></h3>
-<p>The trust policy can be scoped to a Namespace or a specific service account within a Namespace. When using IRSA it's best to make the role trust policy as explicit as possible by including the service account name. This will effectively prevent other Pods within the same Namespace from assuming the role. The CLI <code>eksctl</code> will do this automatically when you use it to create service accounts/IAM roles. See https://eksctl.io/usage/iamserviceaccounts/ for further information. </p>
 <h3 id="grant-least-privileged-access-to-applications">Grant least privileged access to applications<a class="headerlink" href="#grant-least-privileged-access-to-applications" title="Permanent link">&para;</a></h3>
 <p><a href="https://github.com/princespaghetti/actionhero">Action Hero</a> is a utility that you can run alongside your application to identify the AWS API calls and corresponding IAM permissions your application needs to function properly.  It is similar to <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html">IAM Access Advisor</a> in that it helps you gradually limit the scope of IAM roles assigned to applications. Consult the documentation on granting <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege">least privileged access</a> to AWS resources for further information.</p>
 <h3 id="alternative-approaches">Alternative approaches<a class="headerlink" href="#alternative-approaches" title="Permanent link">&para;</a></h3>
