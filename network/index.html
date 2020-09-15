@@ -1009,8 +1009,8 @@
 <p class="admonition-title">Important</p>
 <p>You <strong>must</strong> create rules for inbound traffic from the cluster security group (kubelet) for all of the probes configured for pod.</p>
 </div>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <p>There is a <a href="https://github.com/aws/amazon-vpc-cni-k8s/pull/1212">bug</a> that currently prevents the kublet from communicating with pods that are assigned to SGs. The current workaround involves running <code>sudo sysctl net.ipv4.tcp_early_demux=0</code> on the affected worker nodes.  </p>
 </div>
 <div class="admonition important">
