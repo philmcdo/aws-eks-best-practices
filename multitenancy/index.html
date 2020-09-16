@@ -423,6 +423,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#tools" class="md-nav__link">
+    Tools
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -735,6 +742,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#tools" class="md-nav__link">
+    Tools
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -852,6 +866,10 @@ https://threadreaderapp.com/thread/1238496944684597248.html. </p>
 <h3 id="open-policy-agent-opa-gatekeeper">Open Policy Agent (OPA) &amp; Gatekeeper<a class="headerlink" href="#open-policy-agent-opa-gatekeeper" title="Permanent link">&para;</a></h3>
 <p><a href="https://github.com/open-policy-agent/gatekeeper">Gatekeeper</a> is a Kubernetes admission controller that enforces policies created with <a href="https://www.openpolicyagent.org/">OPA</a>. With OPA you can create a policy that runs pods from tenants on separate instances or at a higher priority than other tenants. </p>
 <p>There is also an experimental <a href="https://github.com/coredns/coredns-opa">OPA plugin for CoreDNS</a> that allows you to use OPA to filter/control the records returned by CoreDNS. </p>
+<h3 id="tools">Tools<a class="headerlink" href="#tools" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="https://github.com/cruise-automation/k-rail">k-rail</a> Designed to help you secure a multi-tenant environment through the enforcement of certain policies. </li>
+</ul>
 <h2 id="hard-multi-tenancy">Hard multi-tenancy<a class="headerlink" href="#hard-multi-tenancy" title="Permanent link">&para;</a></h2>
 <p>Hard multi-tenancy can be implemented by provisioning separate clusters for each tenant.  While this provides very strong isolation between tenants, it has several drawbacks.  </p>
 <p>First, when you have many tenants, this approach can quickly become expensive. Not only will you have to pay for the control plane costs for each cluster, you will not be able to share compute resources between clusters.  This will eventually cause fragmentation where a subset of your clusters are underutilized while others are overutilized. </p>
