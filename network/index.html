@@ -1011,7 +1011,7 @@
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>There is a <a href="https://github.com/aws/amazon-vpc-cni-k8s/pull/1212">bug</a> that currently prevents the kublet from communicating with pods that are assigned to SGs. The current workaround involves running <code>sudo sysctl net.ipv4.tcp_early_demux=0</code> on the affected worker nodes.  </p>
+<p>There is a <a href="https://github.com/aws/amazon-vpc-cni-k8s/pull/1212">bug</a> that currently prevents the kublet from communicating with pods that are assigned to SGs. The current workaround involves running <code>sudo sysctl net.ipv4.tcp_early_demux=0</code> on the affected worker nodes.  This is fixed in CNI v1.7.3, (https://github.com/aws/amazon-vpc-cni-k8s/releases/tag/v1.7.3)[https://github.com/aws/amazon-vpc-cni-k8s/releases/tag/v1.7.3].</p>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>

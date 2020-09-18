@@ -352,6 +352,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    Additional Resources
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -723,6 +730,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    Additional Resources
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -907,6 +921,8 @@
 <li><a href="https://aws.amazon.com/blogs/opensource/consistent-oidc-authentication-across-multiple-eks-clusters-using-kube-oidc-proxy/">Consistent OIDC authentication across multiple EKS clusters using kube-oidc-proxy</a></li>
 </ul>
 <p>You can also use <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html">AWS SSO</a> to federate AWS with an external identity provider, e.g. Azure AD. If you decide to use this, the AWS CLI v2.0 includes an option to create a named profile that makes it easy to associate an SSO session with your current CLI session and assume an IAM role. Know that you must assume a role <em>prior</em> to running <code>kubectl</code> as the IAM role is used to determine the user's Kubernetes RBAC group.</p>
+<h3 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/mhausenblas/rbac.dev">rbac.dev</a> A list of additional resources, including blogs and tools, for Kubernetes RBAC</p>
 <h2 id="pods-identities">Pods Identities<a class="headerlink" href="#pods-identities" title="Permanent link">&para;</a></h2>
 <p>Certain applications that run within a Kubernetes cluster need permission to call the Kubernetes API to function properly. For example, the <a href="https://kubernetes-sigs.github.io/aws-alb-ingress-controller/">ALB Ingress Controller</a> needs to be able to list a Service's Endpoints. The controller also needs to be able to invoke AWS APIs to provision and configure an ALB.  In this section we will explore the best practices for assigning rights and privileges to Pods. </p>
 <h3 id="kubernetes-service-accounts">Kubernetes Service Accounts<a class="headerlink" href="#kubernetes-service-accounts" title="Permanent link">&para;</a></h3>
