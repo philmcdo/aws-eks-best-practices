@@ -424,6 +424,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#kyverno" class="md-nav__link">
+    Kyverno
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#tools" class="md-nav__link">
     Tools
   </a>
@@ -743,6 +750,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#kyverno" class="md-nav__link">
+    Kyverno
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#tools" class="md-nav__link">
     Tools
   </a>
@@ -866,6 +880,9 @@ https://threadreaderapp.com/thread/1238496944684597248.html. </p>
 <h3 id="open-policy-agent-opa-gatekeeper">Open Policy Agent (OPA) &amp; Gatekeeper<a class="headerlink" href="#open-policy-agent-opa-gatekeeper" title="Permanent link">&para;</a></h3>
 <p><a href="https://github.com/open-policy-agent/gatekeeper">Gatekeeper</a> is a Kubernetes admission controller that enforces policies created with <a href="https://www.openpolicyagent.org/">OPA</a>. With OPA you can create a policy that runs pods from tenants on separate instances or at a higher priority than other tenants. </p>
 <p>There is also an experimental <a href="https://github.com/coredns/coredns-opa">OPA plugin for CoreDNS</a> that allows you to use OPA to filter/control the records returned by CoreDNS. </p>
+<h3 id="kyverno">Kyverno<a class="headerlink" href="#kyverno" title="Permanent link">&para;</a></h3>
+<p><a href="https://kyverno.io">Kyverno</a> is a Kubernetes native policy engine that can validate, mutate, and generate configurations with policies as Kubernetes resources. Kyverno uses Kustomize-style overlays for validation, supports JSON Patch and strategic merge patch for mutation, and can clone resources across namespaces based on flexible triggers.</p>
+<p>You can use Kyverno to isolate namespaces, enforce pod security and other best practices, and generate default configurations such as network policies.</p>
 <h3 id="tools">Tools<a class="headerlink" href="#tools" title="Permanent link">&para;</a></h3>
 <ul>
 <li><a href="https://github.com/cruise-automation/k-rail">k-rail</a> Designed to help you secure a multi-tenant environment through the enforcement of certain policies. </li>
@@ -879,14 +896,16 @@ https://threadreaderapp.com/thread/1238496944684597248.html. </p>
 <p>The Kubernetes community has recognized the current shortcomings of soft multi-tenancy and the challenges with hard multi-tenancy. The <a href="https://github.com/kubernetes-sigs/multi-tenancy">Multi-Tenancy Special Interest Group (SIG)</a> is attempting to address these shortcomings through several incubation projects, including Hierarchical Namespace Controller (HNC) and Virtual Cluster.</p>
 <p>The HNC proposal (KEP) describes a way to create parent-child relationships between namespaces with [policy] object inheritance along with an ability for tenant administrators to create subnamespaces.</p>
 <p>The Virtual Cluster proposal describes a mechanism for creating separate instances of the control plane services, including the API server, the controller manager, and scheduler, for each tenant within the cluster (also known as "Kubernetes on Kubernetes").</p>
+<p>The <a href="https://github.com/kubernetes-sigs/multi-tenancy/blob/master/benchmarks/README.md">Multi-Tenancy Benchmarks</a> proposal provides guidelines for sharing clusters using namespaces for isolation and segmentation, and a command line tool <a href="https://github.com/kubernetes-sigs/multi-tenancy/blob/master/benchmarks/kubectl-mtb/README.md">kubectl-mtb</a> to validate conformance to the guidelines.</p>
 <h2 id="multi-cluster-management-resources">Multi-cluster management resources<a class="headerlink" href="#multi-cluster-management-resources" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="https://rancher.com/products/rancher/">Rancher</a></li>
-<li><a href="https://d2iq.com/solutions/ksphere/kommander">Kommander</a></li>
-<li><a href="https://www.weave.works/oss/flux/">Weave Flux</a></li>
 <li><a href="https://banzaicloud.com/">Banzai Cloud</a></li>
-<li><a href="https://rafay.co/">Rafay</a></li>
+<li><a href="https://d2iq.com/solutions/ksphere/kommander">Kommander</a></li>
 <li><a href="https://github.com/lensapp/lens">Lens</a></li>
+<li><a href="https://nirmata.com">Nirmata</a></li>
+<li><a href="https://rafay.co/">Rafay</a></li>
+<li><a href="https://rancher.com/products/rancher/">Rancher</a></li>
+<li><a href="https://www.weave.works/oss/flux/">Weave Flux</a></li>
 </ul>
                 
               
