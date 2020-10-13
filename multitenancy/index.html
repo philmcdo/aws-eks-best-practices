@@ -878,11 +878,11 @@
 <p>For additional information about the effort to make Firecracker a supported runtime for EKS, see
 https://threadreaderapp.com/thread/1238496944684597248.html. </p>
 <h3 id="open-policy-agent-opa-gatekeeper">Open Policy Agent (OPA) &amp; Gatekeeper<a class="headerlink" href="#open-policy-agent-opa-gatekeeper" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/open-policy-agent/gatekeeper">Gatekeeper</a> is a Kubernetes admission controller that enforces policies created with <a href="https://www.openpolicyagent.org/">OPA</a>. With OPA you can create a policy that runs pods from tenants on separate instances or at a higher priority than other tenants. </p>
+<p><a href="https://github.com/open-policy-agent/gatekeeper">Gatekeeper</a> is a Kubernetes admission controller that enforces policies created with <a href="https://www.openpolicyagent.org/">OPA</a>. With OPA you can create a policy that runs pods from tenants on separate instances or at a higher priority than other tenants. A collection of common OPA policies can be found in the GitHub <a href="https://github.com/aws/aws-eks-best-practices/tree/master/policies/opa">repository</a> for this project. </p>
 <p>There is also an experimental <a href="https://github.com/coredns/coredns-opa">OPA plugin for CoreDNS</a> that allows you to use OPA to filter/control the records returned by CoreDNS. </p>
 <h3 id="kyverno">Kyverno<a class="headerlink" href="#kyverno" title="Permanent link">&para;</a></h3>
 <p><a href="https://kyverno.io">Kyverno</a> is a Kubernetes native policy engine that can validate, mutate, and generate configurations with policies as Kubernetes resources. Kyverno uses Kustomize-style overlays for validation, supports JSON Patch and strategic merge patch for mutation, and can clone resources across namespaces based on flexible triggers.</p>
-<p>You can use Kyverno to isolate namespaces, enforce pod security and other best practices, and generate default configurations such as network policies.</p>
+<p>You can use Kyverno to isolate namespaces, enforce pod security and other best practices, and generate default configurations such as network policies.  Several examples are included in the GitHub <a href="https://github.com/aws/aws-eks-best-practices/tree/master/policies/kyverno">respository</a> for this project.  </p>
 <h3 id="tools">Tools<a class="headerlink" href="#tools" title="Permanent link">&para;</a></h3>
 <ul>
 <li><a href="https://github.com/cruise-automation/k-rail">k-rail</a> Designed to help you secure a multi-tenant environment through the enforcement of certain policies. </li>

@@ -749,7 +749,7 @@
 <td align="center">1</td>
 </tr>
 <tr>
-<td>HITRUSST CSF</td>
+<td>HITRUST CSF</td>
 <td align="center">1</td>
 <td align="center">1</td>
 <td align="center">1</td>
@@ -765,7 +765,7 @@
 <p>Policy can be thought of as a set of rules for governing behaviors, i.e. behaviors that are allowed or those that are prohibited. For example, you may have a policy that says that all Dockerfiles should include a USER directive that causes the container to run as a non-root user. As a document, a policy like this can be hard to discover and enforce. It may also become outdated as your requirements change.</p>
 <h2 id="recommendations">Recommendations<a class="headerlink" href="#recommendations" title="Permanent link">&para;</a></h2>
 <h3 id="use-open-policy-agent-opa-or-alcides-skan-to-detect-policy-violations-before-deployment">Use Open Policy Agent (OPA) or Alcide's sKan to detect policy violations before deployment<a class="headerlink" href="#use-open-policy-agent-opa-or-alcides-skan-to-detect-policy-violations-before-deployment" title="Permanent link">&para;</a></h3>
-<p><a href="https://www.openpolicyagent.org/">OPA</a> is open source policy engine that's part of CNCF. It's used for making policy decisions and can be run a variety of different ways, e.g. as a language library or a service. OPA policies are written in a Domain Specific Language (DSL) called Rego. While it is often run as part of a Kubernetes Dynamic Admission Controller, OPA can also be incorporated into your CI/CD pipeline. This allows developers to get feedback about their configuration earlier in the release cycle which can subsequently help them resolve issues before they get to production.  </p>
+<p><a href="https://www.openpolicyagent.org/">OPA</a> is open source policy engine that's part of CNCF. It's used for making policy decisions and can be run a variety of different ways, e.g. as a language library or a service. OPA policies are written in a Domain Specific Language (DSL) called Rego. While it is often run as part of a Kubernetes Dynamic Admission Controller, OPA can also be incorporated into your CI/CD pipeline. This allows developers to get feedback about their configuration earlier in the release cycle which can subsequently help them resolve issues before they get to production. A collection of common OPA policies can be found in the GitHub <a href="https://github.com/aws/aws-eks-best-practices/tree/master/policies/opa">repository</a> for this project.</p>
 <ul>
 <li><a href="https://github.com/open-policy-agent/conftest">Conftest</a> is built on top of OPA and it provides a developer focused experience for testing Kubernetes configuration. </li>
 <li><a href="https://github.com/alcideio/skan">sKan</a> is powered by OPA and is "tailor made" to check whether their Kubernetes configuration files are compliant with security and operational best practices. </li>
